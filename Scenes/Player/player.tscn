@@ -1,0 +1,79 @@
+[gd_scene load_steps=11 format=3 uid="uid://nbgf1ghi40ls"]
+
+[ext_resource type="Script" uid="uid://bl8silfvs6guk" path="res://Scripts/Player.gd" id="1_uvnfx"]
+[ext_resource type="Texture2D" uid="uid://ww0ut64qlqdq" path="res://Assets/Player/battle3.png" id="2_74mp2"]
+[ext_resource type="Texture2D" uid="uid://cnqmvbj6fp8vr" path="res://Assets/Player/battle2.png" id="3_oikmp"]
+[ext_resource type="Texture2D" uid="uid://8uscaudhv3u4" path="res://Assets/Player/battle1.png" id="4_06tpx"]
+[ext_resource type="Texture2D" uid="uid://cmidnn50bq31" path="res://Assets/Player/jump.png" id="6_dey5f"]
+[ext_resource type="Texture2D" uid="uid://b3v875fsxjprp" path="res://Assets/Player/walk2.png" id="8_ks1b7"]
+[ext_resource type="Texture2D" uid="uid://dm3kf5pli1uo2" path="res://Assets/Player/walk4.png" id="10_aqm4k"]
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_h8ma5"]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("2_74mp2")
+}, {
+"duration": 1.0,
+"texture": ExtResource("3_oikmp")
+}],
+"loop": true,
+"name": &"Battle",
+"speed": 1.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("4_06tpx")
+}],
+"loop": true,
+"name": &"Idle",
+"speed": 5.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("6_dey5f")
+}],
+"loop": true,
+"name": &"Jump",
+"speed": 5.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("8_ks1b7")
+}, {
+"duration": 1.0,
+"texture": ExtResource("10_aqm4k")
+}],
+"loop": true,
+"name": &"Walk",
+"speed": 3.0
+}]
+
+[sub_resource type="CapsuleShape2D" id="CapsuleShape2D_eksi1"]
+radius = 52.0
+height = 146.0
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_jincj"]
+size = Vector2(105, 134)
+
+[node name="Player" type="CharacterBody2D"]
+script = ExtResource("1_uvnfx")
+
+[node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="."]
+sprite_frames = SubResource("SpriteFrames_h8ma5")
+animation = &"Idle"
+frame_progress = 0.1674999
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+shape = SubResource("CapsuleShape2D_eksi1")
+
+[node name="Colision" type="Area2D" parent="."]
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Colision"]
+position = Vector2(-0.5, 2)
+shape = SubResource("RectangleShape2D_jincj")
+
+[node name="Camera2D" type="Camera2D" parent="."]
+position = Vector2(102, 6)
+
+[connection signal="body_entered" from="Colision" to="." method="_on_collision_body_entered"]
