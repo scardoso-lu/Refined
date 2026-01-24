@@ -1,0 +1,113 @@
+[gd_scene load_steps=4 format=3 uid="uid://xmpu3jdme10l"]
+
+[ext_resource type="Script" uid="uid://c1gmallishhtf" path="res://Scripts/Login/character_select.gd" id="1_j2e8d"]
+[ext_resource type="Texture2D" uid="uid://btvk55atsj3d8" path="res://Assets/Textures/player_selection.png" id="2_d68do"]
+[ext_resource type="PackedScene" uid="uid://dvo8e14hgyib7" path="res://Scenes/Components/select_button.tscn" id="3_0baai"]
+
+[node name="CharacterSelect" type="Control"]
+layout_mode = 3
+anchors_preset = 0
+offset_left = 1.0
+offset_right = 1151.0
+offset_bottom = 319.0
+script = ExtResource("1_j2e8d")
+
+[node name="Background" type="TextureRect" parent="."]
+layout_mode = 0
+offset_top = 6.0
+offset_right = 1151.0
+offset_bottom = 720.0
+texture = ExtResource("2_d68do")
+
+[node name="HeroSlots" type="Control" parent="."]
+anchors_preset = 0
+offset_right = 40.0
+offset_bottom = 40.0
+
+[node name="Slot0" type="VBoxContainer" parent="HeroSlots"]
+layout_mode = 0
+offset_left = 60.0
+offset_top = 210.0
+offset_right = 316.0
+offset_bottom = 466.0
+
+[node name="Portrait" type="TextureRect" parent="HeroSlots/Slot0"]
+layout_mode = 2
+stretch_mode = 3
+
+[node name="NameLabel" type="Label" parent="HeroSlots/Slot0"]
+layout_mode = 2
+
+[node name="SelectButton" parent="HeroSlots/Slot0" instance=ExtResource("3_0baai")]
+layout_mode = 2
+
+[node name="Slot1" type="VBoxContainer" parent="HeroSlots"]
+layout_mode = 0
+offset_left = 316.0
+offset_top = 250.0
+offset_right = 572.0
+offset_bottom = 506.0
+
+[node name="Portrait" type="TextureRect" parent="HeroSlots/Slot1"]
+layout_mode = 2
+stretch_mode = 3
+
+[node name="NameLabel" type="Label" parent="HeroSlots/Slot1"]
+layout_mode = 2
+
+[node name="SelectButton" parent="HeroSlots/Slot1" instance=ExtResource("3_0baai")]
+layout_mode = 2
+
+[node name="Slot2" type="VBoxContainer" parent="HeroSlots"]
+layout_mode = 0
+offset_left = 580.0
+offset_top = 250.0
+offset_right = 836.0
+offset_bottom = 506.0
+
+[node name="Portrait" type="TextureRect" parent="HeroSlots/Slot2"]
+layout_mode = 2
+stretch_mode = 3
+
+[node name="NameLabel" type="Label" parent="HeroSlots/Slot2"]
+layout_mode = 2
+
+[node name="SelectButton" parent="HeroSlots/Slot2" instance=ExtResource("3_0baai")]
+layout_mode = 2
+
+[node name="Slot3" type="VBoxContainer" parent="HeroSlots"]
+layout_mode = 0
+offset_left = 836.0
+offset_top = 210.0
+offset_right = 1092.0
+offset_bottom = 466.0
+
+[node name="Portrait" type="TextureRect" parent="HeroSlots/Slot3"]
+layout_mode = 2
+stretch_mode = 3
+
+[node name="NameLabel" type="Label" parent="HeroSlots/Slot3"]
+layout_mode = 2
+
+[node name="SelectButton" parent="HeroSlots/Slot3" instance=ExtResource("3_0baai")]
+layout_mode = 2
+
+[node name="Navigation" type="Control" parent="."]
+anchors_preset = 0
+offset_top = 296.0
+offset_right = 1138.0
+offset_bottom = 394.0
+
+[node name="NextButton" type="Button" parent="Navigation"]
+layout_mode = 0
+offset_left = 1075.0
+offset_top = -10.0
+offset_right = 1135.0
+offset_bottom = 40.0
+
+[node name="PrevButton" type="Button" parent="Navigation"]
+layout_mode = 0
+offset_left = 10.0
+offset_top = -10.0
+offset_right = 70.0
+offset_bottom = 40.0

@@ -1,0 +1,49 @@
+[gd_scene load_steps=6 format=3 uid="uid://cw32lljoy5qpi"]
+
+[ext_resource type="Script" uid="uid://bp86kc0k7pfr5" path="res://Scripts/Monsters/enemy_controller.gd" id="1_uq2xv"]
+
+[sub_resource type="CapsuleShape2D" id="CapsuleShape2D_uq2xv"]
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_sw3yv"]
+animations = [{
+"frames": [],
+"loop": true,
+"name": &"idle",
+"speed": 5.0
+}]
+
+[sub_resource type="CapsuleShape2D" id="CapsuleShape2D_0ouli"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_3byci"]
+
+[node name="BaseEnemy" type="CharacterBody2D"]
+script = ExtResource("1_uq2xv")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+shape = SubResource("CapsuleShape2D_uq2xv")
+
+[node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="."]
+sprite_frames = SubResource("SpriteFrames_sw3yv")
+animation = &"idle"
+
+[node name="DetectionArea" type="Area2D" parent="."]
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="DetectionArea"]
+shape = SubResource("CapsuleShape2D_0ouli")
+
+[node name="AttackArea" type="Area2D" parent="."]
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="AttackArea"]
+shape = SubResource("RectangleShape2D_3byci")
+
+[node name="HealthBar" type="ProgressBar" parent="."]
+offset_top = 4.0
+offset_right = 31.0
+offset_bottom = 31.0
+
+[node name="FloorRay" type="RayCast2D" parent="."]
+position = Vector2(10, 0)
+target_position = Vector2(0, 20)
+
+[connection signal="body_entered" from="DetectionArea" to="." method="_on_detection_area_body_entered"]
+[connection signal="body_exited" from="DetectionArea" to="." method="_on_detection_area_body_exited"]

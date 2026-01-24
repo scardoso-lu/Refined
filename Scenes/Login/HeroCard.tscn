@@ -1,0 +1,32 @@
+[gd_scene load_steps=2 format=3 uid="uid://dtprt25qhkbrv"]
+
+[ext_resource type="Script" uid="uid://fev0wp7kyesu" path="res://Scripts/Login/hero_card.gd" id="1_28hs4"]
+
+[node name="HeroCard" type="Control"]
+custom_minimum_size = Vector2(300, 500)
+layout_mode = 3
+anchors_preset = 0
+offset_top = 1.0
+offset_right = 300.0
+offset_bottom = 501.0
+script = ExtResource("1_28hs4")
+
+[node name="Background" type="TextureRect" parent="."]
+layout_mode = 0
+offset_right = 40.0
+offset_bottom = 40.0
+
+[node name="CharacterArt" type="TextureRect" parent="."]
+layout_mode = 0
+offset_right = 40.0
+offset_bottom = 40.0
+
+[node name="NameLabel" type="Label" parent="."]
+layout_mode = 0
+offset_right = 40.0
+offset_bottom = 23.0
+
+[node name="SelectButton" type="Button" parent="."]
+layout_mode = 0
+offset_right = 8.0
+offset_bottom = 8.0
