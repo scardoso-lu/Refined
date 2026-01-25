@@ -18,8 +18,9 @@ var gravity = ProjectSettings.get_setting("physics/2d/default_gravity")
 var floating_text_scene = preload("res://Scenes/Components/DamageNumbers.tscn")
 
 var current_health: int = 100
-
 var has_dealt_damage: bool = false # NEW FLAG
+
+var knockback: Vector2 = Vector2.ZERO
 
 func _ready():
 	# Setup the generic timer
@@ -49,6 +50,22 @@ func setup_monster(def: MonsterDef):
 	# You can add 'attack_speed' to your MonsterDef later!
 	attack_timer.wait_time = 1.0 
 
+func _handle_knockback(delta):
+	# --- KNOCKBACK LOGIC ---
+	if knockback != Vector2.ZERO:
+		# Apply the knockback force
+		velocity = knockback
+		# Apply Friction (reduce knockback quickly over time)
+		# Adjust '1000' to change how "slippery" the floor feels
+		knockback = knockback.move_toward(Vector2.ZERO, 1000 * delta)
+		if is_attacking:
+			is_attacking = false
+			_abort_attack()
+			
+		move_and_slide()
+		return  1 # Stop here! Don't chase while flying backward.
+	return 0
+
 func _physics_process(delta):
 	# Update RayCast Direction
 	# If moving Right, put ray on Right. If Left, put ray on Left.
@@ -59,6 +76,10 @@ func _physics_process(delta):
 	
 	if not is_on_floor():
 		velocity.y += gravity * delta
+		
+	if _handle_knockback(delta):
+		print("KNOCK!")
+		return
 
 	# 1. PRIORITY: Handling the Attack
 	if is_attacking:
@@ -98,7 +119,7 @@ func _physics_process(delta):
 	
 	move_and_slide()
 
-func take_damage(amount: int):
+func take_damage(amount: int, source_pos: Vector2 = Vector2.ZERO):
 	current_health -= amount
 	print("Monster hit! HP: ", current_health)
 	
@@ -122,6 +143,18 @@ func take_damage(amount: int):
 	# UPDATE BAR
 	health_bar.value = current_health
 	health_bar.visible = true # Show it if it was hidden
+	
+	print(source_pos)
+	# --- CALCULATE KNOCKBACK ---
+	if source_pos != Vector2.ZERO:
+		# Direction: From Source -> To Me
+		var direction = (global_position - source_pos).normalized()
+		# Strength: How hard do we fly? (e.g., 300 pixels/sec)
+		var push_force = 200 
+		# Apply slightly upward so they hop a little (looks better)
+		knockback = direction * push_force
+		knockback.y = -50 # A little pop into the air
+	# ---------------------------
 	
 	if current_health <= 0:
 		die()

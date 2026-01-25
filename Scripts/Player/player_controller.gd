@@ -206,4 +206,4 @@ func _on_weapon_area_body_entered(body):
 	if body.has_method("take_damage"):
 		# Confirm it's an enemy
 		print("Hit enemy: ", body.name)
-		body.take_damage(damage)
+		body.take_damage(damage, global_position) # KNOCKBACK !!
