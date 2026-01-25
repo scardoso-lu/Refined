@@ -6,10 +6,12 @@ extends Resource
 @export var sprite_frames: SpriteFrames
 # Add this new line!
 @export var portrait: Texture2D
+@export var avatar_texture: Texture2D
 
 @export_group("Stats")
 @export var move_speed : float = 400
 @export var current_health: int = 100
+@export var max_health: int = 100
 
 @export_group("Movement")
 @export var speed: float = 300.0

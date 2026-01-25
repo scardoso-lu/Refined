@@ -1,4 +1,4 @@
-[gd_scene load_steps=4 format=3 uid="uid://nbgf1ghi40ls"]
+[gd_scene load_steps=5 format=3 uid="uid://nbgf1ghi40ls"]
 
 [ext_resource type="Script" uid="uid://bl8silfvs6guk" path="res://Scripts/Player/player_controller.gd" id="1_uvnfx"]
 
@@ -14,7 +14,12 @@ animations = [{
 "speed": 5.0
 }]
 
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_uvnfx"]
+size = Vector2(800, 500)
+
 [node name="Player" type="CharacterBody2D" groups=["Player"]]
+collision_layer = 2
+collision_mask = 13
 script = ExtResource("1_uvnfx")
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
@@ -32,3 +37,14 @@ one_shot = true
 [node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="."]
 sprite_frames = SubResource("SpriteFrames_uvnfx")
 animation = &"idle"
+
+[node name="WeaponArea" type="Area2D" parent="."]
+collision_layer = 0
+collision_mask = 4
+monitoring = false
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="WeaponArea"]
+position = Vector2(50, 0)
+shape = SubResource("RectangleShape2D_uvnfx")
+
+[connection signal="body_entered" from="WeaponArea" to="." method="_on_weapon_area_body_entered"]

@@ -1,11 +1,13 @@
-[gd_resource type="Resource" script_class="CharacterDef" load_steps=4 format=3 uid="uid://cf21g45ygr7uj"]
+[gd_resource type="Resource" script_class="CharacterDef" load_steps=5 format=3 uid="uid://cf21g45ygr7uj"]
 
 [ext_resource type="Texture2D" uid="uid://bj2u416nb3f5b" path="res://Assets/Player/warrior/attack_right/frames/06.png" id="1_0r8rf"]
 [ext_resource type="Script" uid="uid://d3e3237g88htu" path="res://Scripts/Player/character_def.gd" id="1_5o2g5"]
+[ext_resource type="Texture2D" uid="uid://bmixsacyfj5sl" path="res://Assets/Player/warrior/attack_right/frames/01.png" id="1_b6jqn"]
 [ext_resource type="SpriteFrames" uid="uid://04q3bagdeug2" path="res://Assets/Player/warrior/warrior_frames.tres" id="2_udfhg"]
 
 [resource]
 script = ExtResource("1_5o2g5")
 sprite_frames = ExtResource("2_udfhg")
 portrait = ExtResource("1_0r8rf")
+avatar_texture = ExtResource("1_b6jqn")
 metadata/_custom_type_script = "uid://d3e3237g88htu"

@@ -3,6 +3,8 @@ extends CharacterBody2D
 @export var monster_data: MonsterDef
 
 @onready var sprite = $AnimatedSprite2D
+@onready var health_bar = $HealthBar
+
 # We need a timer to prevent the monster from hitting 60 times per second
 @onready var attack_timer = Timer.new() 
 
@@ -13,6 +15,9 @@ extends CharacterBody2D
 var player_ref: Node2D = null
 var is_attacking: bool = false
 var gravity = ProjectSettings.get_setting("physics/2d/default_gravity")
+var floating_text_scene = preload("res://Scenes/Components/DamageNumbers.tscn")
+
+var current_health: int = 100
 
 var has_dealt_damage: bool = false # NEW FLAG
 
@@ -25,7 +30,14 @@ func _ready():
 		setup_monster(monster_data)
 
 func setup_monster(def: MonsterDef):
-	# 1. Visuals & Stats (Same as before)
+	# Setup Health
+	current_health = def.max_health # Load health from data!
+	health_bar.max_value = def.max_health
+	health_bar.value = def.max_health
+	# Optional: Hide bar if full? (Uncomment to enable)
+	# health_bar.visible = false
+	
+	# 1. Visuals & Stats 
 	if def.sprite_frames:
 		sprite.sprite_frames = def.sprite_frames
 		sprite.play("idle")
@@ -38,7 +50,7 @@ func setup_monster(def: MonsterDef):
 	attack_timer.wait_time = 1.0 
 
 func _physics_process(delta):
-		# Update RayCast Direction
+	# Update RayCast Direction
 	# If moving Right, put ray on Right. If Left, put ray on Left.
 	if velocity.x > 0:
 		floor_ray.position.x = abs(floor_ray.position.x)
@@ -55,7 +67,7 @@ func _physics_process(delta):
 			var dist = global_position.distance_to(player_ref.global_position)
 			# If player moves just slightly out of range (Range + 20px buffer)
 			# We cancel the attack immediately.
-			if dist > monster_data.attack_range * 2:
+			if dist > monster_data.attack_range + 50:
 				_abort_attack()
 				return
 		# ---------------------------
@@ -71,7 +83,6 @@ func _physics_process(delta):
 			is_attacking = false
 			attack_timer.start() # Start cooldown only after attack finishes
 		else:
-			move_and_slide()
 			return
 
 	# 2. AI Decision (Same as before)
@@ -87,13 +98,56 @@ func _physics_process(delta):
 	
 	move_and_slide()
 
+func take_damage(amount: int):
+	current_health -= amount
+	print("Monster hit! HP: ", current_health)
+	
+	# --- NEW: SPAWN FLOATING TEXT ---
+	var text_instance = floating_text_scene.instantiate()	
+	# 1. Set the Data (Safe to do before adding child)
+	text_instance.set_values(amount, Color.YELLOW)	
+	# 2. Set Position
+	var random_x = randf_range(-80, -60)
+	var random_y = randf_range(-100, -50)
+	text_instance.global_position = global_position + Vector2(random_x, random_y)
+	# 3. Add to World (This triggers _ready and starts the animation)
+	get_tree().current_scene.add_child(text_instance)
+	# -------------------------------
+	
+	# Optional: Play a "Hurt" animation or flash white
+	sprite.modulate = Color.RED
+	await get_tree().create_timer(0.1).timeout
+	sprite.modulate = Color.WHITE
+	
+	# UPDATE BAR
+	health_bar.value = current_health
+	health_bar.visible = true # Show it if it was hidden
+	
+	if current_health <= 0:
+		die()
+
+func die():
+	print("Monster Died!")
+	# Stop everything
+	set_physics_process(false) 
+	
+	# Play death animation if you have one
+	if sprite.sprite_frames.has_animation("death"):
+		sprite.play("death")
+		await sprite.animation_finished
+		
+	queue_free() # Delete the monster from the game
+
 func _deal_damage_to_player():
 	# We use the AttackArea (Area2D) to check for overlapping bodies
 	var bodies = $AttackArea.get_overlapping_bodies()
 	
 	print("--- Attack Swing ---")
+	print(bodies)
 	for body in bodies:
 		print("Touched: ", body.name)  # <--- Check this output!
+		if body == self:
+			continue # Don't hit yourself!
 		
 		if body.has_method("take_damage"):
 			body.take_damage(monster_data.damage)
@@ -133,9 +187,20 @@ func _chase_state():
 	# Normal Movement
 	velocity.x = dir.x * monster_data.speed
 	
-	# Flip sprite (same as before)
-	if dir.x > 0: sprite.flip_h = false
-	elif dir.x < 0: sprite.flip_h = true
+	# --- IMPROVED FLIP LOGIC ---
+	if dir.x > 0: 
+		# Face Right
+		sprite.flip_h = false
+		# Ensure AttackArea is on the Right (Positive X)
+		$AttackArea.position.x = abs($AttackArea.position.x)
+		
+	elif dir.x < 0: 
+		# Face Left
+		sprite.flip_h = true
+
+		# Ensure AttackArea is on the Left (Negative X)
+		$AttackArea.position.x = -abs($AttackArea.position.x)
+	# ---------------------------
 	
 	sprite.play("run")
 

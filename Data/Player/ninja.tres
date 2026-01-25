@@ -8,4 +8,5 @@
 script = ExtResource("1_mxbvv")
 sprite_frames = ExtResource("2_cghfa")
 portrait = ExtResource("1_g5fj0")
+avatar_texture = ExtResource("1_g5fj0")
 metadata/_custom_type_script = "uid://d3e3237g88htu"
