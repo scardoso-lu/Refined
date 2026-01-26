@@ -1,6 +1,7 @@
-[gd_scene load_steps=10 format=3 uid="uid://cw32lljoy5qpi"]
+[gd_scene load_steps=11 format=3 uid="uid://cw32lljoy5qpi"]
 
 [ext_resource type="Script" uid="uid://bp86kc0k7pfr5" path="res://Scripts/Monsters/enemy_controller.gd" id="1_uq2xv"]
+[ext_resource type="Script" uid="uid://b3l5fu3stpcfi" path="res://Scripts/Monsters/monster_state_machine.gd" id="2_sw3yv"]
 
 [sub_resource type="CapsuleShape2D" id="CapsuleShape2D_uq2xv"]
 
@@ -76,6 +77,9 @@ grow_vertical = 2
 nine_patch_stretch = true
 texture_under = SubResource("GradientTexture1D_sw3yv")
 texture_progress = SubResource("GradientTexture1D_0ouli")
+
+[node name="StateMachine" type="Node" parent="."]
+script = ExtResource("2_sw3yv")
 
 [connection signal="body_entered" from="DetectionArea" to="." method="_on_detection_area_body_entered"]
 [connection signal="body_exited" from="DetectionArea" to="." method="_on_detection_area_body_exited"]

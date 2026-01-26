@@ -239,8 +239,9 @@ script = ExtResource("3_37jai")
 [node name="Score" type="Control" parent="UserInterface/GameUI"]
 unique_name_in_owner = true
 anchors_preset = 0
-offset_right = 40.0
-offset_bottom = 40.0
+offset_top = 700.0
+offset_right = 50.0
+offset_bottom = 750.0
 
 [node name="ScoreLabel" type="Label" parent="UserInterface/GameUI/Score"]
 unique_name_in_owner = true
@@ -260,7 +261,7 @@ script = ExtResource("6_taws2")
 [node name="MonsterSpawnPoint2" type="Marker2D" parent="."]
 position = Vector2(1059, 384)
 script = ExtResource("6_taws2")
-monster_id = "small_globin"
+monster_id = "little_dragon"
 
 [node name="Background" type="TextureRect" parent="."]
 show_behind_parent = true

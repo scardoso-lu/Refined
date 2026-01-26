@@ -1,247 +1,127 @@
 extends CharacterBody2D
+class_name MonsterController
 
-@export var monster_data: MonsterDef
-
+# --- NODES ---
+@onready var state_machine = $StateMachine # We'll add this next
 @onready var sprite = $AnimatedSprite2D
 @onready var health_bar = $HealthBar
-
-# We need a timer to prevent the monster from hitting 60 times per second
-@onready var attack_timer = Timer.new() 
-
-# We need to give it "Ledge Detection"
 @onready var floor_ray = $FloorRay
+@onready var attack_area = $AttackArea
+@onready var detection_area = $DetectionArea
 
-# State Variables
-var player_ref: Node2D = null
-var is_attacking: bool = false
+# --- DATA ---
+@export var monster_data: MonsterDef
+var current_health: int = 100
 var gravity = ProjectSettings.get_setting("physics/2d/default_gravity")
 var floating_text_scene = preload("res://Scenes/Components/DamageNumbers.tscn")
 
-var current_health: int = 100
-var has_dealt_damage: bool = false # NEW FLAG
-
-var knockback: Vector2 = Vector2.ZERO
+# --- AI SENSORS ---
+var player_ref: Node2D = null
 
 func _ready():
-	# Setup the generic timer
-	add_child(attack_timer)
-	attack_timer.one_shot = true
+	# Initialize the Brain
+	state_machine.init(self)
 	
 	if monster_data:
 		setup_monster(monster_data)
 
 func setup_monster(def: MonsterDef):
-	# Setup Health
-	current_health = def.max_health # Load health from data!
+	current_health = def.max_health
 	health_bar.max_value = def.max_health
 	health_bar.value = def.max_health
-	# Optional: Hide bar if full? (Uncomment to enable)
-	# health_bar.visible = false
 	
-	# 1. Visuals & Stats 
 	if def.sprite_frames:
 		sprite.sprite_frames = def.sprite_frames
 		sprite.play("idle")
+		
 	sprite.scale = Vector2(def.scale, def.scale)
 	$DetectionArea/CollisionShape2D.shape.radius = def.aggro_range
-	
-	# 2. Attack Setup
-	# Let's say every monster attacks once per second (1.0s)
-	# You can add 'attack_speed' to your MonsterDef later!
-	attack_timer.wait_time = 1.0 
-
-func _handle_knockback(delta):
-	# --- KNOCKBACK LOGIC ---
-	if knockback != Vector2.ZERO:
-		# Apply the knockback force
-		velocity = knockback
-		# Apply Friction (reduce knockback quickly over time)
-		# Adjust '1000' to change how "slippery" the floor feels
-		knockback = knockback.move_toward(Vector2.ZERO, 1000 * delta)
-		if is_attacking:
-			is_attacking = false
-			_abort_attack()
-			
-		move_and_slide()
-		return  1 # Stop here! Don't chase while flying backward.
-	return 0
 
 func _physics_process(delta):
-	# Update RayCast Direction
-	# If moving Right, put ray on Right. If Left, put ray on Left.
+	# 1. Update Sensors
+	# Move the Ledge Raycast to face the direction we are moving
 	if velocity.x > 0:
 		floor_ray.position.x = abs(floor_ray.position.x)
 	elif velocity.x < 0:
 		floor_ray.position.x = -abs(floor_ray.position.x)
 	
+	# 2. Run Brain
+	state_machine.physics_update(delta)
+	
+	# 3. Apply Movement
+	move_and_slide()
+
+# --- PUBLIC API (Commands for the Brain) ---
+
+func apply_gravity(delta: float):
 	if not is_on_floor():
 		velocity.y += gravity * delta
-		
-	if _handle_knockback(delta):
-		print("KNOCK!")
-		return
 
-	# 1. PRIORITY: Handling the Attack
-	if is_attacking:
-		# --- NEW: INTERRUPT LOGIC ---
-		if player_ref:
-			var dist = global_position.distance_to(player_ref.global_position)
-			# If player moves just slightly out of range (Range + 20px buffer)
-			# We cancel the attack immediately.
-			if dist > monster_data.attack_range + 50:
-				_abort_attack()
-				return
-		# ---------------------------
-		# 2. DAMAGE LOGIC (The New Part)
-		# Check if we are on the "Impact Frame" (e.g., Frame 1 or 2)
-		# Adjust the number '1' to match whichever frame looks like the "Hit" in your animation
-		if sprite.frame >= 10 and not has_dealt_damage:
-			_deal_damage_to_player()
-			has_dealt_damage = true # Lock it so we don't hit 60 times a second
+func move_towards_target(target_pos: Vector2):
+	var dir = (target_pos - global_position).normalized()
+	velocity.x = dir.x * monster_data.speed
+	_flip_sprite(dir.x)
 
-		# 3. Animation Finish Check
-		if not sprite.is_playing(): 
-			is_attacking = false
-			attack_timer.start() # Start cooldown only after attack finishes
-		else:
-			return
+func stop_moving():
+	velocity.x = move_toward(velocity.x, 0, 10)
 
-	# 2. AI Decision (Same as before)
-	if player_ref:
-		var distance = global_position.distance_to(player_ref.global_position)
-		
-		if distance <= monster_data.attack_range and attack_timer.is_stopped():
-			_start_attack()
-		else:
-			_chase_state()
-	else:
-		_idle_state()
-	
-	move_and_slide()
+func is_at_ledge() -> bool:
+	# If we are on the floor, but the ray sees nothing, it's a cliff
+	return is_on_floor() and not floor_ray.is_colliding()
+
+func _flip_sprite(dir_x: float):
+	if dir_x > 0:
+		sprite.flip_h = false
+		attack_area.position.x = abs(attack_area.position.x)
+	elif dir_x < 0:
+		sprite.flip_h = true
+		attack_area.position.x = -abs(attack_area.position.x)
+
+# --- COMBAT LOGIC ---
+
+func deal_damage_to_player():
+	var bodies = attack_area.get_overlapping_bodies()
+	for body in bodies:
+		if body == self: continue
+		if body.has_method("take_damage"):
+			body.take_damage(monster_data.damage)
 
 func take_damage(amount: int, source_pos: Vector2 = Vector2.ZERO):
 	current_health -= amount
-	print("Monster hit! HP: ", current_health)
 	
-	# --- NEW: SPAWN FLOATING TEXT ---
-	var text_instance = floating_text_scene.instantiate()	
-	# 1. Set the Data (Safe to do before adding child)
-	text_instance.set_values(amount, Color.YELLOW)	
-	# 2. Set Position
-	var random_x = randf_range(-80, -60)
-	var random_y = randf_range(-100, -50)
-	text_instance.global_position = global_position + Vector2(random_x, random_y)
-	# 3. Add to World (This triggers _ready and starts the animation)
+	# Spawn Text
+	var text_instance = floating_text_scene.instantiate()
+	text_instance.set_values(amount, Color.YELLOW)
+	text_instance.global_position = global_position + Vector2(randf_range(-80, -60), randf_range(-100, -50))
 	get_tree().current_scene.add_child(text_instance)
-	# -------------------------------
 	
-	# Optional: Play a "Hurt" animation or flash white
-	sprite.modulate = Color.RED
-	await get_tree().create_timer(0.1).timeout
-	sprite.modulate = Color.WHITE
-	
-	# UPDATE BAR
+	# Update Bar
 	health_bar.value = current_health
-	health_bar.visible = true # Show it if it was hidden
+	health_bar.visible = true
 	
-	print(source_pos)
-	# --- CALCULATE KNOCKBACK ---
+	# Flash Red
+	sprite.modulate = Color.RED
+	var tween = create_tween()
+	tween.tween_property(sprite, "modulate", Color.WHITE, 0.1)
+
+	# --- FORCE STATE CHANGE: KNOCKBACK ---
 	if source_pos != Vector2.ZERO:
-		# Direction: From Source -> To Me
-		var direction = (global_position - source_pos).normalized()
-		# Strength: How hard do we fly? (e.g., 300 pixels/sec)
-		var push_force = 200 
-		# Apply slightly upward so they hop a little (looks better)
-		knockback = direction * push_force
-		knockback.y = -50 # A little pop into the air
-	# ---------------------------
-	
+		var knock_dir = (global_position - source_pos).normalized()
+		var knock_force = Vector2(knock_dir.x * 200, -50)
+		# Tell the Brain to interrupt everything and fly backward
+		state_machine.apply_knockback(knock_force)
+
 	if current_health <= 0:
 		die()
 
 func die():
-	print("Monster Died!")
-	# Stop everything
-	set_physics_process(false) 
-	
-	# Play death animation if you have one
+	set_physics_process(false)
 	if sprite.sprite_frames.has_animation("death"):
 		sprite.play("death")
 		await sprite.animation_finished
-		
-	queue_free() # Delete the monster from the game
+	queue_free()
 
-func _deal_damage_to_player():
-	# We use the AttackArea (Area2D) to check for overlapping bodies
-	var bodies = $AttackArea.get_overlapping_bodies()
-	
-	print("--- Attack Swing ---")
-	print(bodies)
-	for body in bodies:
-		print("Touched: ", body.name)  # <--- Check this output!
-		if body == self:
-			continue # Don't hit yourself!
-		
-		if body.has_method("take_damage"):
-			body.take_damage(monster_data.damage)
-			print(">> Damage Dealt!")
-		else:
-			print(">> No 'take_damage' method found on ", body.name)
-
-# Add this helper function to switch back cleanly
-func _abort_attack():
-	is_attacking = false
-	# Immediately switch animation to run so it doesn't look frozen
-	sprite.play("run")
-	# Optional: Reset cooldown so he attacks sooner if he catches you again?
-	# attack_timer.stop()
-
-func _start_attack():
-	is_attacking = true
-	has_dealt_damage = false # Reset the flag for the new swing
-	velocity.x = 0 # Stop moving
-	
-	# Play animation (Ensure your SpriteFrames has an "attack" animation!)
-	if sprite.sprite_frames.has_animation("attack"):
-		sprite.play("attack")
-	else:
-		print("Error: No 'attack' animation found!")
-		is_attacking = false # Abort
-
-func _chase_state():
-	var dir = (player_ref.global_position - global_position).normalized()
-	# NEW: Check for Cliff
-	# If we are on the ground AND the ray sees nothing -> STOP!
-	if is_on_floor() and not floor_ray.is_colliding():
-		velocity.x = 0
-		sprite.play("idle")
-		return # Don't run off the edge!
-		
-	# Normal Movement
-	velocity.x = dir.x * monster_data.speed
-	
-	# --- IMPROVED FLIP LOGIC ---
-	if dir.x > 0: 
-		# Face Right
-		sprite.flip_h = false
-		# Ensure AttackArea is on the Right (Positive X)
-		$AttackArea.position.x = abs($AttackArea.position.x)
-		
-	elif dir.x < 0: 
-		# Face Left
-		sprite.flip_h = true
-
-		# Ensure AttackArea is on the Left (Negative X)
-		$AttackArea.position.x = -abs($AttackArea.position.x)
-	# ---------------------------
-	
-	sprite.play("run")
-
-func _idle_state():
-	velocity.x = move_toward(velocity.x, 0, 10)
-	sprite.play("idle")
-
-# --- SIGNALS (Keep these connected!) ---
+# --- SIGNALS ---
 func _on_detection_area_body_entered(body):
 	if body.name == "Player": player_ref = body
 

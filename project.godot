@@ -14,6 +14,7 @@ config/name="Refined"
 config/tags=PackedStringArray("4.5")
 run/main_scene="uid://xmpu3jdme10l"
 config/features=PackedStringArray("4.5", "GL Compatibility")
+config/icon="uid://sc5tt2ehj4ur"
 
 [audio]
 

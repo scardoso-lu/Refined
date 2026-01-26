@@ -1,6 +1,7 @@
-[gd_scene load_steps=5 format=3 uid="uid://nbgf1ghi40ls"]
+[gd_scene load_steps=6 format=3 uid="uid://nbgf1ghi40ls"]
 
 [ext_resource type="Script" uid="uid://bl8silfvs6guk" path="res://Scripts/Player/player_controller.gd" id="1_uvnfx"]
+[ext_resource type="Script" uid="uid://qnv1j0dchckn" path="res://Scripts/Player/player_state_machine.gd" id="2_a3d8c"]
 
 [sub_resource type="CapsuleShape2D" id="CapsuleShape2D_eksi1"]
 radius = 52.0
@@ -46,5 +47,8 @@ monitoring = false
 [node name="CollisionShape2D" type="CollisionShape2D" parent="WeaponArea"]
 position = Vector2(50, 0)
 shape = SubResource("RectangleShape2D_uvnfx")
+
+[node name="StateMachine" type="Node" parent="."]
+script = ExtResource("2_a3d8c")
 
 [connection signal="body_entered" from="WeaponArea" to="." method="_on_weapon_area_body_entered"]
