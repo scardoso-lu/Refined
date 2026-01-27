@@ -1,6 +1,7 @@
-[gd_scene load_steps=11 format=3 uid="uid://cw32lljoy5qpi"]
+[gd_scene load_steps=12 format=3 uid="uid://cw32lljoy5qpi"]
 
 [ext_resource type="Script" uid="uid://bp86kc0k7pfr5" path="res://Scripts/Monsters/enemy_controller.gd" id="1_uq2xv"]
+[ext_resource type="PackedScene" uid="uid://kg76jqturayc" path="res://Scenes/Components/Effects/LootItem.tscn" id="2_0ouli"]
 [ext_resource type="Script" uid="uid://b3l5fu3stpcfi" path="res://Scripts/Monsters/monster_state_machine.gd" id="2_sw3yv"]
 
 [sub_resource type="CapsuleShape2D" id="CapsuleShape2D_uq2xv"]
@@ -37,6 +38,7 @@ gradient = SubResource("Gradient_uq2xv")
 [node name="BaseEnemy" type="CharacterBody2D"]
 collision_layer = 4
 script = ExtResource("1_uq2xv")
+loot_scene = ExtResource("2_0ouli")
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
 shape = SubResource("CapsuleShape2D_uq2xv")

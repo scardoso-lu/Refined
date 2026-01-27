@@ -2,24 +2,15 @@ extends Node
 class_name PlayerStateMachine
 
 # --- 1. DEFINITIONS ---
-# Layer 1: Movement (Exclusive states for position/physics)
-enum MoveState {
-	IDLE,
-	RUN,
-	AIR
-}
-
-# Layer 2: Actions (Exclusive states for combat/interaction)
-enum ActionState {
-	NONE,
-	ATTACK
-}
+enum MoveState { IDLE, RUN, AIR }
+enum ActionState { NONE, ATTACK }
 
 var current_move_state: MoveState = MoveState.IDLE
 var current_action_state: ActionState = ActionState.NONE
 
 var player: PlayerController
 var jump_buffer_timer: float = 0.0
+var has_hit_target: bool = false # Ensures we only hit once per swing
 
 # --- 2. SETUP ---
 func init(parent: PlayerController) -> void:
@@ -27,21 +18,19 @@ func init(parent: PlayerController) -> void:
 
 # --- 3. INPUT HANDLING ---
 func input_update(event: InputEvent) -> void:
-	# -- Movement Inputs --
 	if event.is_action_pressed("jump"):
 		jump_buffer_timer = 0.1
 	
-	# Variable Jump Height (Cutting the jump short)
+	# Variable Jump Height
 	if event.is_action_released("jump") and player.velocity.y < 0:
 		player.velocity.y *= 0.5
 
-	# -- Action Inputs --
-	# Only allow starting an attack if we aren't already doing one
+	# Attack Input
 	if current_action_state == ActionState.NONE:
 		if event.is_action_pressed("base_attack"):
 			change_action_state(ActionState.ATTACK)
 
-# --- 4. PHYSICS LOOP (The Heartbeat) ---
+# --- 4. PHYSICS LOOP ---
 func physics_update(delta: float) -> void:
 	# Decrement Timers
 	if jump_buffer_timer > 0: jump_buffer_timer -= delta
@@ -54,11 +43,10 @@ func physics_update(delta: float) -> void:
 		
 	# UPDATE LAYER 2: ACTION
 	match current_action_state:
-		ActionState.NONE:  _action_none(delta)
+		ActionState.NONE:   _action_none(delta)
 		ActionState.ATTACK: _action_attack(delta)
 	
 	# RESOLVE ANIMATIONS
-	# Since two layers might want to play animations, we decide who wins here.
 	_resolve_animation()
 
 # ==============================================================================
@@ -68,16 +56,17 @@ func physics_update(delta: float) -> void:
 func change_move_state(new_state: MoveState) -> void:
 	current_move_state = new_state
 	
-	# Enter Logic (Optional specific setup)
 	match new_state:
 		MoveState.AIR:
-			# If we just entered air and fell (didn't jump), start coyote time
+			# Coyote Time: If falling without jumping, start timer
 			if player.velocity.y >= 0: 
 				player.coyote_timer.start()
 
 func _move_idle(delta: float) -> void:
 	player.apply_gravity(delta)
-	player.velocity.x = move_toward(player.velocity.x, 0, player.get_move_speed())
+	
+	# Apply friction to stop
+	player.handle_movement_input(player.get_move_speed())
 	
 	# Transitions
 	if not player.is_on_floor():
@@ -96,8 +85,7 @@ func _move_run(delta: float) -> void:
 	# Calculate Speed
 	var speed = player.get_move_speed()
 	
-	# CROSS-LAYER INTERACTION:
-	# If we are attacking, maybe we move slower? (e.g., 50% speed)
+	# Slow down if attacking
 	if current_action_state == ActionState.ATTACK:
 		speed *= 0.5
 	
@@ -120,7 +108,7 @@ func _move_air(delta: float) -> void:
 	# Air Control
 	var speed = player.get_move_speed()
 	if current_action_state == ActionState.ATTACK:
-		speed *= 0.8 # Slightly less control in air while attacking?
+		speed *= 0.8 # Less control in air while attacking
 		
 	player.handle_movement_input(speed)
 
@@ -155,19 +143,25 @@ func change_action_state(new_state: ActionState) -> void:
 	
 	match new_state:
 		ActionState.ATTACK:
-			# Start Attack
+			has_hit_target = false
 			player.sprite.play("attack")
-			player.weapon_area.monitoring = true
+			# We do NOT enable collision here. We wait for the frame.
 		ActionState.NONE:
-			# End Attack
-			player.weapon_area.monitoring = false
+			pass
 
 func _action_none(_delta: float) -> void:
-	# Just waiting for input (handled in input_update)
+	# Passive state waiting for input
 	pass
 
 func _action_attack(_delta: float) -> void:
-	# Wait for animation to finish
+	# 1. Damage Logic (Sync with Animation Frame)
+	# Check Frame 2 (Adjust this number based on your specific animation!)
+	if player.sprite.frame == 2 and not has_hit_target:
+		player.deal_damage_in_hitbox()
+		has_hit_target = true
+
+	# 2. End Logic
+	# If animation finished OR changed unexpectedly
 	if not player.sprite.is_playing() or player.sprite.animation != "attack":
 		change_action_state(ActionState.NONE)
 
@@ -178,7 +172,6 @@ func _action_attack(_delta: float) -> void:
 func _resolve_animation() -> void:
 	# Rule 1: Attacks usually override everything
 	if current_action_state == ActionState.ATTACK:
-		# If the sprite is already playing "attack", don't interrupt it
 		if player.sprite.animation != "attack":
 			player.sprite.play("attack")
 		return

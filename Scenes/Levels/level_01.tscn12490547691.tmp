@@ -1,12 +1,13 @@
-[gd_scene load_steps=10 format=4 uid="uid://b2qbxg2jdt8x2"]
+[gd_scene load_steps=11 format=4 uid="uid://b2qbxg2jdt8x2"]
 
 [ext_resource type="Script" uid="uid://cvhj1bplhsali" path="res://Scripts/Levels/level_manager.gd" id="1_tqmcp"]
 [ext_resource type="PackedScene" uid="uid://nbgf1ghi40ls" path="res://Scenes/Player/player.tscn" id="1_ygytw"]
 [ext_resource type="Texture2D" uid="uid://bpyu5wj32xg3s" path="res://Assets/tile.jpg" id="2_tqmcp"]
+[ext_resource type="Script" uid="uid://cdu0ng7kq12nh" path="res://Scripts/Global/HUD.gd" id="3_37jai"]
+[ext_resource type="PackedScene" uid="uid://5s1d5q1ua43v" path="res://Scenes/Components/Player/HealthWidget.tscn" id="3_bmcj7"]
 [ext_resource type="Script" uid="uid://cwahanyfu61ip" path="res://Scripts/Global/GameManager.gd" id="3_tqmcp"]
 [ext_resource type="Script" uid="uid://b0qh5xeacgia6" path="res://Scripts/Monsters/monster_spawner.gd" id="6_taws2"]
 [ext_resource type="Texture2D" uid="uid://cjhb50hvlxiro" path="res://Assets/Map/level_01.jpg" id="7_mb1if"]
-[ext_resource type="PackedScene" uid="uid://d0bxpwvr7rro3" path="res://Scenes/Components/UI/HUD.tscn" id="8_bmcj7"]
 
 [sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_6q1ru"]
 texture = ExtResource("2_tqmcp")
@@ -203,7 +204,7 @@ sources/0 = SubResource("TileSetAtlasSource_6q1ru")
 script = ExtResource("1_tqmcp")
 player_scene = ExtResource("1_ygytw")
 
-[node name="UserInterface" parent="." instance=ExtResource("8_bmcj7")]
+[node name="PlayerHealthBar" parent="." instance=ExtResource("3_bmcj7")]
 
 [node name="Level" type="Node2D" parent="."]
 
@@ -219,6 +220,9 @@ tile_set = SubResource("TileSet_ok5ke")
 position = Vector2(185, 375.99997)
 rotation = 0.2617994
 script = ExtResource("3_tqmcp")
+
+[node name="UserInterface" type="CanvasLayer" parent="."]
+script = ExtResource("3_37jai")
 
 [node name="PlayerSpawnPoint" type="Marker2D" parent="."]
 position = Vector2(174, 200)

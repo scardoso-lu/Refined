@@ -2,13 +2,17 @@ extends CharacterBody2D
 class_name PlayerController
 
 signal health_changed(new_amount)
+signal currency_updated(new_gold, xp, xp_next_max) # Must have 3 arguments!
+signal level_up(new_level)
 
 # --- Configuration ---
 @export_group("Debugging")
 @export var debug_character: CharacterDef
+@export_group("Physics")
+@export var acceleration: float = 1200.0
+@export var friction: float = 1600.0
 
 # --- Nodes ---
-# We assume the State Machine is a child node named "StateMachine"
 @onready var state_machine = $StateMachine 
 @onready var sprite: AnimatedSprite2D = $AnimatedSprite2D
 @onready var coyote_timer: Timer = $CoyoteTimer
@@ -17,22 +21,32 @@ signal health_changed(new_amount)
 
 # --- Variables ---
 var _stats: CharacterDef 
-@export var damage: int = 20
-@export var max_health: int = 100
 var current_health: int
+var max_health: int
+var damage: int = 20 # Default, overwritten by stats
 
-# Physics constants
+# Loot variables
+var gold: int = 0
+var experience: int = 0
+var xp_next_level: int = 100
+var current_level: int = 1
+
 var gravity: float = ProjectSettings.get_setting("physics/2d/default_gravity")
 
 func _ready():
-	# Initialize the brain
 	state_machine.init(self)
+	add_to_group("Player")
+	
+	# Fix: Actually use the debug stats on startup
+	if debug_character:
+		setup_character(debug_character)
 
 func setup_character(def: CharacterDef) -> void:
-	print("✅ setup_character called with: ", def)
 	_stats = def
-	max_health = _stats.max_health
 	current_health = _stats.current_health
+	max_health = _stats.max_health
+	# Assuming CharacterDef has a damage value, otherwise keep default
+	# damage = _stats.damage 
 	
 	if _stats.sprite_frames:
 		sprite.sprite_frames = _stats.sprite_frames
@@ -45,24 +59,17 @@ func setup_character(def: CharacterDef) -> void:
 		collider.shape.radius = def.collider_size.x / 2.0
 		collider.shape.height = def.collider_size.y
 
-# --- THE GAME LOOP ---
+# --- PHYSICS ---
 func _physics_process(delta: float) -> void:
-	# 1. Ask the Brain to calculate velocity
 	state_machine.physics_update(delta)
-	
-	# 2. Move the Body
 	move_and_slide()
 
 func _input(event):
-	# Forward inputs to the Brain
 	state_machine.input_update(event)
 
-# --- PUBLIC ACTIONS (The API) ---
-# The State Machine calls these functions.
+# --- PUBLIC API ---
 
 func apply_gravity(delta: float) -> void:
-	# We don't check is_on_floor() here because the State Machine 
-	# decides when gravity applies (e.g., usually always, unless climbing/dashing)
 	velocity.y += gravity * delta
 
 func get_move_speed() -> float:
@@ -71,21 +78,32 @@ func get_move_speed() -> float:
 func get_jump_force() -> float:
 	return _stats.jump_velocity if _stats else -400.0
 
-func handle_movement_input(speed: float) -> void:
+func handle_movement_input(max_speed: float) -> void:
 	var direction := Input.get_axis("move_left", "move_right")
+	var delta = get_physics_process_delta_time()
 	
 	if direction:
-		velocity.x = direction * speed
+		# Smooth Acceleration
+		velocity.x = move_toward(velocity.x, direction * max_speed, acceleration * delta)
 		
-		# Sprite Flipping
+		# Visual Flipping
 		sprite.flip_h = direction < 0
-		# Hitbox Flipping
-		if direction < 0:
-			weapon_area.position.x = -abs(weapon_area.position.x)
-		else:
-			weapon_area.position.x = abs(weapon_area.position.x)
+		# Flip weapon area using Scale (handles children/offsets automatically)
+		weapon_area.scale.x = -1 if direction < 0 else 1
 	else:
-		velocity.x = move_toward(velocity.x, 0, speed)
+		# Smooth Friction
+		velocity.x = move_toward(velocity.x, 0, friction * delta)
+
+# --- COMBAT ---
+
+# Called by State Machine on specific animation frame
+func deal_damage_in_hitbox():
+	var bodies = weapon_area.get_overlapping_bodies()
+	for body in bodies:
+		if body == self: continue
+		if body.has_method("take_damage"):
+			# Pass self.global_position so enemy knows where knockback comes from
+			body.take_damage(damage, global_position)
 
 func take_damage(amount: int):
 	current_health -= amount
@@ -100,9 +118,39 @@ func take_damage(amount: int):
 
 func die():
 	print("Player Died!")
+	# Reloading scene is fine for now
 	get_tree().reload_current_scene()
 
-func _on_weapon_area_body_entered(body):
-	if body == self: return
-	if body.has_method("take_damage"):
-		body.take_damage(damage, global_position)
+func collect_loot(type_id: int, amount: int):
+	match type_id:
+		0: # COIN
+			gold += amount
+		1: # GEM
+			experience += amount
+			_check_level_up()
+	print("updating player loot")
+	# Update UI immediately
+	currency_updated.emit(gold, experience, xp_next_level)
+
+func _check_level_up():
+	# While loop allows multiple level ups at once (big XP drops)
+	while experience >= xp_next_level:
+		experience -= xp_next_level
+		current_level += 1
+		
+		# Curve: Increases by 50% each level
+		xp_next_level = int(xp_next_level * 1.5)
+		
+		# Full Heal on Level Up
+		current_health = _stats.max_health # Assuming you use _stats from CharacterDef
+		health_changed.emit(current_health)
+		
+		# Visual/Audio feedback
+		level_up.emit(current_level)
+		_play_level_up_effect()
+
+func _play_level_up_effect():
+	# Simple flash green
+	var tween = create_tween()
+	sprite.modulate = Color.GREEN
+	tween.tween_property(sprite, "modulate", Color.WHITE, 0.5)
