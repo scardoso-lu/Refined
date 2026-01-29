@@ -95,5 +95,13 @@ func _on_slot_button_pressed(slot_index: int):
 	
 	if selected_id:
 		print("Selected Hero: ", selected_id)
+		# Ask GameState to load the data from disk
+		var saved_scene = GameState.load_game()		
 		GameState.selected_character_id = selected_id
-		get_tree().change_scene_to_file("res://Scenes/Levels/level_01.tscn")
+		
+		if saved_scene:
+			# If a file existed, jump straight to Level 50
+			get_tree().change_scene_to_file(saved_scene)
+		else:
+			# No file? Start fresh at Level 1
+			get_tree().change_scene_to_file("res://Scenes/Levels/level_01.tscn")

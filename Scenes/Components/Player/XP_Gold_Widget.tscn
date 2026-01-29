@@ -1,13 +1,13 @@
 [gd_scene load_steps=2 format=3 uid="uid://cw0hilcifiit2"]
 
-[ext_resource type="Script" uid="uid://c7ghxnmg1g62j" path="res://Scripts/Components/currency_widget.gd" id="1_kyqey"]
+[ext_resource type="Script" uid="uid://c7ghxnmg1g62j" path="res://Scripts/Components/xp_gold_widget.gd" id="1_xjqas"]
 
 [node name="Control" type="Control"]
 layout_mode = 3
 anchors_preset = 0
 offset_right = 40.0
 offset_bottom = 40.0
-script = ExtResource("1_kyqey")
+script = ExtResource("1_xjqas")
 
 [node name="HBoxContainer" type="HBoxContainer" parent="."]
 layout_mode = 0

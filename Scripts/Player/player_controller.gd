@@ -30,6 +30,7 @@ var gold: int = 0
 var experience: int = 0
 var xp_next_level: int = 100
 var current_level: int = 1
+var current_scene: String = "level_01.tscn"
 
 var gravity: float = ProjectSettings.get_setting("physics/2d/default_gravity")
 

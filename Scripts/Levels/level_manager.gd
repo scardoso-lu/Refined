@@ -25,11 +25,24 @@ func _ready():
 		# 1. Initialize Player first
 	if player.has_method("setup_character"):
 		player.setup_character(character_data)
+		# --- PERSISTENCE CHECK ---
+		# If HP is valid (>-1), it means we came from another level.
+		# If HP is -1, it means we just started the game (fresh spawn).
+		if GameState.current_hp != -1:
+			player.current_health = GameState.current_hp
+			player.gold = GameState.current_gold
+			player.experience = GameState.current_xp
+			player.current_level = GameState.current_level
+			player.current_scene = GameState.current_scene
 	
 	# 2. Initialize HUD second (so it reads correct Player stats)
 	if hud.has_method("setup_hud"):
 		# pass the player reference AND the data
 		hud.setup_hud(player, character_data)
+		# Important: If your UI setup happened earlier, 
+		# you might need to force a UI update here to reflect the loaded stats.
+		hud.currency_widget.update_ui(player.gold, player.experience, player.xp_next_level)
+		hud.health_widget._on_player_health_changed(player.current_health)
 	else:
 		print("Critical Error: No character data loaded.")
 	

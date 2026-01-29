@@ -1,9 +1,9 @@
 [gd_scene load_steps=5 format=3 uid="uid://d0bxpwvr7rro3"]
 
 [ext_resource type="Script" uid="uid://cdu0ng7kq12nh" path="res://Scripts/Global/HUD.gd" id="1_vy4fw"]
-[ext_resource type="PackedScene" uid="uid://cw0hilcifiit2" path="res://Scenes/Components/Player/CurrencyWidget.tscn" id="2_6wa13"]
+[ext_resource type="PackedScene" uid="uid://cw0hilcifiit2" path="res://Scenes/Components/Player/XP_Gold_Widget.tscn" id="2_6wa13"]
 [ext_resource type="PackedScene" uid="uid://5s1d5q1ua43v" path="res://Scenes/Components/Player/HealthWidget.tscn" id="3_rxb6u"]
-[ext_resource type="PackedScene" uid="uid://bbntgip2rau7w" path="res://Scenes/Components/UI/BossHealthWidget.tscn" id="4_rxb6u"]
+[ext_resource type="PackedScene" uid="uid://bbntgip2rau7w" path="res://Scenes/Components/Boss/BossHealthWidget.tscn" id="4_rxb6u"]
 
 [node name="CanvasLayer" type="CanvasLayer" node_paths=PackedStringArray("health_widget", "currency_widget", "boss_health_widget")]
 script = ExtResource("1_vy4fw")
