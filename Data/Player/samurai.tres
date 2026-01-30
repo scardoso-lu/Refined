@@ -1,12 +1,12 @@
-[gd_resource type="Resource" script_class="CharacterDef" load_steps=4 format=3 uid="uid://dlvb5utfcxwqd"]
+[gd_resource type="Resource" script_class="CharacterDef" format=3 uid="uid://dlvb5utfcxwqd"]
 
-[ext_resource type="Texture2D" uid="uid://c2etrewijrpsj" path="res://Assets/Player/samurai/attack_right/frames/01.png" id="1_2kohd"]
 [ext_resource type="Script" uid="uid://d3e3237g88htu" path="res://Scripts/Player/character_def.gd" id="1_obbbi"]
+[ext_resource type="Texture2D" uid="uid://dv7fpmgpr10d2" path="res://Assets/Player/samurai/01.png" id="2_dp6mm"]
 [ext_resource type="SpriteFrames" uid="uid://c87i0t1uyhtbm" path="res://Assets/Player/samurai/samurai_frames.tres" id="2_y2oat"]
 
 [resource]
 script = ExtResource("1_obbbi")
 sprite_frames = ExtResource("2_y2oat")
-portrait = ExtResource("1_2kohd")
-avatar_texture = ExtResource("1_2kohd")
+portrait = ExtResource("2_dp6mm")
+avatar_texture = ExtResource("2_dp6mm")
 metadata/_custom_type_script = "uid://d3e3237g88htu"

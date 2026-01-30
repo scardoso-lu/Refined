@@ -98,7 +98,7 @@ func _on_slot_button_pressed(slot_index: int):
 		# Ask GameState to load the data from disk
 		var saved_scene = GameState.load_game()		
 		GameState.selected_character_id = selected_id
-		
+		print(saved_scene)
 		if saved_scene:
 			# If a file existed, jump straight to Level 50
 			get_tree().change_scene_to_file(saved_scene)

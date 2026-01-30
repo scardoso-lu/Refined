@@ -1,19 +1,20 @@
-[gd_scene load_steps=5 format=3 uid="uid://d0bxpwvr7rro3"]
+[gd_scene format=3 uid="uid://d0bxpwvr7rro3"]
 
 [ext_resource type="Script" uid="uid://cdu0ng7kq12nh" path="res://Scripts/Global/HUD.gd" id="1_vy4fw"]
 [ext_resource type="PackedScene" uid="uid://cw0hilcifiit2" path="res://Scenes/Components/Player/XP_Gold_Widget.tscn" id="2_6wa13"]
 [ext_resource type="PackedScene" uid="uid://5s1d5q1ua43v" path="res://Scenes/Components/Player/HealthWidget.tscn" id="3_rxb6u"]
 [ext_resource type="PackedScene" uid="uid://bbntgip2rau7w" path="res://Scenes/Components/Boss/BossHealthWidget.tscn" id="4_rxb6u"]
+[ext_resource type="PackedScene" uid="uid://dgih4bu67dl51" path="res://Scenes/Components/Player/GameOverWidget.tscn" id="5_y8w51"]
 
-[node name="CanvasLayer" type="CanvasLayer" node_paths=PackedStringArray("health_widget", "currency_widget", "boss_health_widget")]
+[node name="CanvasLayer" type="CanvasLayer" unique_id=1272446120 node_paths=PackedStringArray("health_widget", "currency_widget", "boss_health_widget")]
 script = ExtResource("1_vy4fw")
 health_widget = NodePath("HealthWidget")
 currency_widget = NodePath("CurrencyWidget")
 boss_health_widget = NodePath("BossHealthWidget")
 
-[node name="HealthWidget" parent="." instance=ExtResource("3_rxb6u")]
+[node name="HealthWidget" parent="." unique_id=1143520955 instance=ExtResource("3_rxb6u")]
 
-[node name="CurrencyWidget" parent="." instance=ExtResource("2_6wa13")]
+[node name="CurrencyWidget" parent="." unique_id=807209461 instance=ExtResource("2_6wa13")]
 custom_minimum_size = Vector2(100, 30)
 layout_direction = 2
 offset_left = 7.0
@@ -23,8 +24,15 @@ offset_bottom = 120.0
 size_flags_horizontal = 0
 size_flags_vertical = 0
 
-[node name="BossHealthWidget" parent="." instance=ExtResource("4_rxb6u")]
+[node name="BossHealthWidget" parent="." unique_id=208917712 instance=ExtResource("4_rxb6u")]
 offset_left = 11.0
 offset_top = 99.0
 offset_right = 51.0
 offset_bottom = 139.0
+
+[node name="GameOverWidget" parent="." unique_id=1046569795 instance=ExtResource("5_y8w51")]
+custom_minimum_size = Vector2(200, 120)
+offset_left = 450.0
+offset_top = 300.0
+offset_right = 650.0
+offset_bottom = 420.0

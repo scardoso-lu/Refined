@@ -4,6 +4,7 @@ class_name PlayerController
 signal health_changed(new_amount)
 signal currency_updated(new_gold, xp, xp_next_max) # Must have 3 arguments!
 signal level_up(new_level)
+signal player_died
 
 # --- Configuration ---
 @export_group("Debugging")
@@ -118,10 +119,11 @@ func take_damage(amount: int):
 		die()
 
 func die():
-	print("Player Died!")
+	print("Player Died! Transitioning to Death State...")
 	# Reloading scene is fine for now
-	get_tree().reload_current_scene()
+	state_machine.change_move_state(state_machine.MoveState.DEATH)
 
+		
 func collect_loot(type_id: int, amount: int):
 	match type_id:
 		0: # COIN
@@ -155,3 +157,6 @@ func _play_level_up_effect():
 	var tween = create_tween()
 	sprite.modulate = Color.GREEN
 	tween.tween_property(sprite, "modulate", Color.WHITE, 0.5)
+
+func is_dead() -> bool:
+	return current_health <= 0

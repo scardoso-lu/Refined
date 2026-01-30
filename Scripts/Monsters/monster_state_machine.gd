@@ -137,6 +137,7 @@ func _action_none(_delta: float) -> void:
 			change_action_state(ActionState.ATTACK)
 
 func _action_attack(_delta: float) -> void:
+	
 	# 1. Target Validation (Optional: Stop attacking if player teleports away)
 	if monster.player_ref:
 		var dist = monster.global_position.distance_to(monster.player_ref.global_position)
@@ -172,34 +173,41 @@ func trigger_death():
 	# Idempotency check: Don't die twice
 	if current_move_state == MoveState.DEATH: return
 	
-	# 1. State Switch
+	print("☠️ Monster triggering death...")
+	
+	# 1. State Switch (Stops AI brain)
 	current_move_state = MoveState.DEATH
 	current_action_state = ActionState.NONE
 	
-
-	# 4. Play Animation Sequence
-	if monster.sprite.sprite_frames.has_animation("death"):
-		monster.sprite.play("death")
-		await monster.sprite.animation_finished
-	else:
-		# Fallback if no anim: fade out
-		var tween = monster.create_tween()
-		tween.tween_property(monster, "modulate:a", 0.0, 0.5)
-		await tween.finished
+	# 2. DISABLE COMBAT IMMEDIATELY
+	# We want the body to exist (visuals), but we don't want it to hurt anyone.
+	# Disable the Attack Area monitoring so it can't deal damage.
+	if monster.attack_area:
+		monster.attack_area.monitoring = false
+		monster.attack_area.monitorable = false
 	
 	# 2. Physics & Collision
 	monster.velocity = Vector2.ZERO
 	# Optional: Disable collision layer so player walks through corpse
 	monster.collision_layer = 0 
 	
-	# 3. Spawn Loot (Delegated to Controller)
-	print("spawn_loot ")
-	monster.spawn_loot()
+	# 3. Play Animation Sequence
+	if monster.sprite.sprite_frames.has_animation("death"):
+		monster.sprite.play("death")
+		# Wait for the animation to finish
+		await monster.sprite.animation_finished
+	else:
+		# Fallback: Fade out if no animation
+		var tween = monster.create_tween()
+		tween.tween_property(monster, "modulate:a", 0.0, 0.5)
+		await tween.finished
 	
+	# 4. Spawn Loot (Delegated to Controller)
+	# Now that the body has hit the floor, we drop the item.
+	monster.spawn_loot()
 	
 	# 5. Cleanup
 	monster.queue_free()
-
 # ==============================================================================
 # VISUAL RESOLVER
 # ==============================================================================

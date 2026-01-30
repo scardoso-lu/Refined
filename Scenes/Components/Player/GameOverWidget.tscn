@@ -1,0 +1,49 @@
+[gd_scene format=3 uid="uid://dgih4bu67dl51"]
+
+[ext_resource type="Script" uid="uid://ctei0fgbawtj2" path="res://Scripts/Global/game_over_widget.gd" id="1_gmmjb"]
+
+[sub_resource type="LabelSettings" id="LabelSettings_30bmb"]
+font_size = 25
+font_color = Color(1, 0, 0, 1)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_gmmjb"]
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_8emx5"]
+
+[node name="GameOverWidget" type="Control" unique_id=1046569795]
+layout_mode = 3
+anchors_preset = 0
+script = ExtResource("1_gmmjb")
+
+[node name="ColorRect" type="ColorRect" parent="." unique_id=1615833950]
+layout_mode = 0
+offset_right = 200.0
+offset_bottom = 120.0
+color = Color(0, 0, 0, 1)
+
+[node name="VBoxContainer" type="VBoxContainer" parent="ColorRect" unique_id=1637103900]
+layout_mode = 0
+offset_left = 10.0
+offset_right = 190.0
+offset_bottom = 115.0
+alignment = 1
+
+[node name="Label" type="Label" parent="ColorRect/VBoxContainer" unique_id=430382138]
+layout_mode = 2
+text = "YOU DIED!"
+label_settings = SubResource("LabelSettings_30bmb")
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="Try Again" type="Button" parent="ColorRect/VBoxContainer" unique_id=134303617]
+layout_mode = 2
+text = "Try Again"
+icon = SubResource("AtlasTexture_gmmjb")
+
+[node name="Back to Vilage" type="Button" parent="ColorRect/VBoxContainer" unique_id=2047392337]
+layout_mode = 2
+text = "Back to Vilage"
+icon = SubResource("AtlasTexture_8emx5")
+
+[connection signal="pressed" from="ColorRect/VBoxContainer/Try Again" to="." method="_on_try_again_pressed"]
+[connection signal="pressed" from="ColorRect/VBoxContainer/Back to Vilage" to="." method="_on_back_to_vilage_pressed"]

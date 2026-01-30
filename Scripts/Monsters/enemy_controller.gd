@@ -53,6 +53,14 @@ func setup_monster(def: MonsterDef):
 	$DetectionArea/CollisionShape2D.shape = circle
 
 func _physics_process(delta):
+	var player = player_ref
+	
+	# --- ADD THIS CHECK ---
+	if player and player.has_method("is_dead") and player.is_dead():
+		print("Target player dead! Continue...")
+		state_machine.change_move_state(state_machine.MoveState.IDLE)
+		player_ref = null
+		
 	# 1. Update Sensors (Flip floor ray to match movement direction)
 	if velocity.x > 0:
 		floor_ray.position.x = abs(floor_ray.position.x)
@@ -100,6 +108,9 @@ func _flip_sprite(dir_x: float):
 
 func deal_damage_to_player():
 	var bodies = attack_area.get_overlapping_bodies()
+
+	
+	
 	for body in bodies:
 		if body == self: continue
 		if body.has_method("take_damage"):
@@ -136,7 +147,7 @@ func spawn_loot():
 	
 	# 3. Configure (Coin vs Gem)
 	# Ensure your LootItem script uses the same Enum mapping (0=Coin, 1=Gem)
-	if randf() > 0.5:
+	if randf() > 0.15:
 		loot.type = 0 # COIN
 		loot.value = gold_value
 	else:

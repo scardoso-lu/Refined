@@ -8,6 +8,9 @@ extends CanvasLayer
 # --- 2. BOSS SYSTEMS ---
 @export var boss_health_widget: BossHealthWidget
 
+# Add the reference
+@onready var game_over_widget = $GameOverWidget 
+
 func setup_hud(player_ref: CharacterBody2D, char_data: CharacterDef):
 	# 1. Initialize Widgets
 	if health_widget:
@@ -23,7 +26,7 @@ func setup_hud(player_ref: CharacterBody2D, char_data: CharacterDef):
 		print("✅ HUD: Connected Player Currency Signal to Widget")
 	else:
 		print("❌ HUD Error: Currency Widget is not assigned in the Inspector!")
-
+	
 
 # --- SETUP BOSS (Independent) ---
 func setup_boss_hud(boss_ref: MonsterController):
@@ -41,6 +44,11 @@ func setup_boss_hud(boss_ref: MonsterController):
 func hide_boss_hud():
 	if boss_health_widget:
 		boss_health_widget.visible = false
+
+# Add a helper function for the Level Manager to call
+func show_game_over_screen():
+	if game_over_widget:
+		game_over_widget.show_game_over()
 
 # Helper
 func _safe_connect(sig: Signal, method: Callable):

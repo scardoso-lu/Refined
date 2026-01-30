@@ -53,3 +53,16 @@ func _ready():
 		
 		# Auto-hide bar when boss dies
 		boss.tree_exiting.connect(hud.hide_boss_hud)
+	
+	print("Connecting Death Signal...")
+	if not player.player_died.is_connected(_on_player_died):
+		player.player_died.connect(_on_player_died)
+
+func _on_player_died():
+	print("💀 Level Manager: Player died signal received.")
+	
+	# Check if HUD exists and has the function we made earlier
+	if hud and hud.has_method("show_game_over_screen"):
+		hud.show_game_over_screen()
+	else:
+		print("❌ Error: HUD is missing or does not have 'show_game_over_screen()'")

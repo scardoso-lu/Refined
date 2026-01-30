@@ -15,7 +15,7 @@ var selected_character_id: String = "hero_samurai" # Default fallback
 
 # ... (Existing code for CHARACTER_DB, current_hp, etc) ...
 
-const SAVE_FILE_PATH = "user://save_game.dat"
+const SAVE_FILE_PATH = "user://saved__game.dat"
 
 # --- 3. SESSION STATE ---
 # These variables remember the player's status between levels.
