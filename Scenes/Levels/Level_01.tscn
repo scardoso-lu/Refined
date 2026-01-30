@@ -239,3 +239,5 @@ texture = ExtResource("7_mb1if")
 light_mask = 2
 visibility_layer = 2
 position = Vector2(2945, 561)
+next_scene_path = "uid://dy7t2xcvf53sc"
+target_spawn_tag = "PlayerSpawnPoint"

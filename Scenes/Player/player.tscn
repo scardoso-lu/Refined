@@ -39,7 +39,7 @@ one_shot = true
 sprite_frames = SubResource("SpriteFrames_uvnfx")
 animation = &"idle"
 
-[node name="WeaponArea" type="Area2D" parent="."]
+[node name="WeaponArea" type="Area2D" parent="." groups=["Player"]]
 collision_layer = 0
 collision_mask = 4
 
