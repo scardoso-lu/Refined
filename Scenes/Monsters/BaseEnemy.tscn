@@ -1,4 +1,4 @@
-[gd_scene load_steps=12 format=3 uid="uid://cw32lljoy5qpi"]
+[gd_scene format=3 uid="uid://cw32lljoy5qpi"]
 
 [ext_resource type="Script" uid="uid://bp86kc0k7pfr5" path="res://Scripts/Monsters/enemy_controller.gd" id="1_uq2xv"]
 [ext_resource type="PackedScene" uid="uid://kg76jqturayc" path="res://Scenes/Components/Effects/LootItem.tscn" id="2_0ouli"]
@@ -35,37 +35,38 @@ colors = PackedColorArray(0, 0.7294118, 0, 1)
 [sub_resource type="GradientTexture1D" id="GradientTexture1D_0ouli"]
 gradient = SubResource("Gradient_uq2xv")
 
-[node name="BaseEnemy" type="CharacterBody2D"]
+[node name="BaseEnemy" type="CharacterBody2D" unique_id=314489181]
 collision_layer = 4
 script = ExtResource("1_uq2xv")
 loot_scene = ExtResource("2_0ouli")
 
-[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+[node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=71990400]
 shape = SubResource("CapsuleShape2D_uq2xv")
 
-[node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="."]
+[node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="." unique_id=1113256553]
 sprite_frames = SubResource("SpriteFrames_sw3yv")
 animation = &"idle"
+offset = Vector2(0, -95)
 
-[node name="DetectionArea" type="Area2D" parent="."]
+[node name="DetectionArea" type="Area2D" parent="." unique_id=1294869945]
 collision_layer = 2
 collision_mask = 2
 
-[node name="CollisionShape2D" type="CollisionShape2D" parent="DetectionArea"]
+[node name="CollisionShape2D" type="CollisionShape2D" parent="DetectionArea" unique_id=2094234029]
 shape = SubResource("CapsuleShape2D_0ouli")
 
-[node name="AttackArea" type="Area2D" parent="."]
+[node name="AttackArea" type="Area2D" parent="." unique_id=873108610]
 collision_layer = 2
 collision_mask = 2
 
-[node name="CollisionShape2D" type="CollisionShape2D" parent="AttackArea"]
+[node name="CollisionShape2D" type="CollisionShape2D" parent="AttackArea" unique_id=807838777]
 shape = SubResource("RectangleShape2D_3byci")
 
-[node name="FloorRay" type="RayCast2D" parent="."]
+[node name="FloorRay" type="RayCast2D" parent="." unique_id=9510616]
 position = Vector2(10, 0)
 target_position = Vector2(0, 20)
 
-[node name="HealthBar" type="TextureProgressBar" parent="."]
+[node name="HealthBar" type="TextureProgressBar" parent="." unique_id=1681686741]
 custom_minimum_size = Vector2(100, 10)
 anchors_preset = 15
 anchor_right = 1.0
@@ -80,7 +81,7 @@ nine_patch_stretch = true
 texture_under = SubResource("GradientTexture1D_sw3yv")
 texture_progress = SubResource("GradientTexture1D_0ouli")
 
-[node name="StateMachine" type="Node" parent="."]
+[node name="StateMachine" type="Node" parent="." unique_id=1660070856]
 script = ExtResource("2_sw3yv")
 
 [connection signal="body_entered" from="DetectionArea" to="." method="_on_detection_area_body_entered"]

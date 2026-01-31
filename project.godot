@@ -31,6 +31,10 @@ MonsterDB="*res://Scripts/Monsters/monster_texture_db.gd"
 
 [display]
 
+window/size/viewport_width=1366
+window/size/viewport_height=768
+window/size/window_width_override=800
+window/size/window_height_override=600
 window/stretch/mode="canvas_items"
 window/stretch/aspect="expand"
 

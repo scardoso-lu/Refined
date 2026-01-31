@@ -108,6 +108,7 @@ func _move_run(delta: float) -> void:
 	_check_jump_start()
 
 func _move_air(delta: float) -> void:
+	
 	player.apply_gravity(delta)
 	var speed = player.get_move_speed()
 	if current_action_state == ActionState.ATTACK:

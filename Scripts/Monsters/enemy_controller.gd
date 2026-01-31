@@ -108,8 +108,6 @@ func _flip_sprite(dir_x: float):
 
 func deal_damage_to_player():
 	var bodies = attack_area.get_overlapping_bodies()
-
-	
 	
 	for body in bodies:
 		if body == self: continue

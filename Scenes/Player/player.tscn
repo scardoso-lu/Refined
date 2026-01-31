@@ -1,11 +1,11 @@
-[gd_scene load_steps=6 format=3 uid="uid://nbgf1ghi40ls"]
+[gd_scene format=3 uid="uid://nbgf1ghi40ls"]
 
 [ext_resource type="Script" uid="uid://bl8silfvs6guk" path="res://Scripts/Player/player_controller.gd" id="1_uvnfx"]
 [ext_resource type="Script" uid="uid://qnv1j0dchckn" path="res://Scripts/Player/player_state_machine.gd" id="2_a3d8c"]
 
 [sub_resource type="CapsuleShape2D" id="CapsuleShape2D_eksi1"]
-radius = 52.0
-height = 146.0
+radius = 68.0
+height = 142.0
 
 [sub_resource type="SpriteFrames" id="SpriteFrames_uvnfx"]
 animations = [{
@@ -18,36 +18,36 @@ animations = [{
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_uvnfx"]
 size = Vector2(800, 500)
 
-[node name="Player" type="CharacterBody2D" groups=["Player"]]
+[node name="Player" type="CharacterBody2D" unique_id=509850614 groups=["Player"]]
 collision_layer = 2
 collision_mask = 13
 script = ExtResource("1_uvnfx")
 
-[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+[node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=995144848]
 shape = SubResource("CapsuleShape2D_eksi1")
 
-[node name="Camera2D" type="Camera2D" parent="."]
-position = Vector2(102, 6)
-position_smoothing_enabled = true
-position_smoothing_speed = 7.0
-
-[node name="CoyoteTimer" type="Timer" parent="."]
+[node name="CoyoteTimer" type="Timer" parent="." unique_id=1613891217]
 wait_time = 0.1
 one_shot = true
 
-[node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="."]
+[node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="." unique_id=332788660]
+position = Vector2(0, -95)
 sprite_frames = SubResource("SpriteFrames_uvnfx")
 animation = &"idle"
 
-[node name="WeaponArea" type="Area2D" parent="." groups=["Player"]]
+[node name="WeaponArea" type="Area2D" parent="." unique_id=1575976362 groups=["Player"]]
 collision_layer = 0
 collision_mask = 4
 
-[node name="CollisionShape2D" type="CollisionShape2D" parent="WeaponArea"]
-position = Vector2(50, 0)
+[node name="CollisionShape2D" type="CollisionShape2D" parent="WeaponArea" unique_id=567316777]
 shape = SubResource("RectangleShape2D_uvnfx")
 
-[node name="StateMachine" type="Node" parent="."]
+[node name="StateMachine" type="Node" parent="." unique_id=1086078534]
 script = ExtResource("2_a3d8c")
+
+[node name="Camera2D" type="Camera2D" parent="." unique_id=1451483163]
+position = Vector2(3, -350)
+limit_top = 800
+limit_bottom = 220
 
 [connection signal="body_entered" from="WeaponArea" to="." method="_on_weapon_area_body_entered"]

@@ -1,0 +1,46 @@
+[gd_scene format=3 uid="uid://b08ldq0iqlwua"]
+
+[ext_resource type="Texture2D" uid="uid://c042ysa2b5lmt" path="res://Assets/Map/level_01/background.png" id="1_4n6c2"]
+[ext_resource type="Texture2D" uid="uid://dor818cfb27i6" path="res://Assets/Map/level_01/cloud_layer.png" id="2_axeby"]
+[ext_resource type="Texture2D" uid="uid://brkowlsua4eo6" path="res://Assets/Map/level_01/tree_layer.png" id="3_gt8r3"]
+
+[node name="ParallaxBackground" type="ParallaxBackground" unique_id=1853952180]
+
+[node name="Cloud" type="Parallax2D" parent="." unique_id=309145266]
+z_index = -2
+texture_filter = 1
+scroll_scale = Vector2(0.1, 0.1)
+repeat_size = Vector2(1920, 0)
+autoscroll = Vector2(100, 0)
+repeat_times = 2
+follow_viewport = false
+
+[node name="Sprite2D" type="Sprite2D" parent="Cloud" unique_id=17241504]
+position = Vector2(0, 520)
+texture = ExtResource("2_axeby")
+
+[node name="Mountains" type="Parallax2D" parent="." unique_id=1567800280]
+z_index = -3
+texture_filter = 1
+scroll_scale = Vector2(0, 0)
+repeat_size = Vector2(1920, 0)
+repeat_times = 4
+follow_viewport = false
+
+[node name="Sprite2D" type="Sprite2D" parent="Mountains" unique_id=526819509]
+texture_filter = 1
+scale = Vector2(1.5, 1.5)
+texture = ExtResource("1_4n6c2")
+centered = false
+
+[node name="Trees" type="Parallax2D" parent="." unique_id=1935287127]
+z_index = -1
+scroll_scale = Vector2(0.9, 0.9)
+scroll_offset = Vector2(0, 141)
+repeat_size = Vector2(1920, 0)
+repeat_times = 4
+
+[node name="Sprite2D" type="Sprite2D" parent="Trees" unique_id=207012203]
+position = Vector2(0, -20)
+texture = ExtResource("3_gt8r3")
+centered = false

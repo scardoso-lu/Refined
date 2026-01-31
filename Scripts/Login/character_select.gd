@@ -99,9 +99,9 @@ func _on_slot_button_pressed(slot_index: int):
 		var saved_scene = GameState.load_game()		
 		GameState.selected_character_id = selected_id
 		print(saved_scene)
-		if saved_scene:
+		#if saved_scene:
 			# If a file existed, jump straight to Level 50
-			get_tree().change_scene_to_file(saved_scene)
-		else:
+		#	get_tree().change_scene_to_file(saved_scene)
+		#else:
 			# No file? Start fresh at Level 1
-			get_tree().change_scene_to_file("res://Scenes/Levels/level_01.tscn")
+		get_tree().change_scene_to_file("res://Scenes/Levels/level_01.tscn")
