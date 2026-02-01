@@ -3,50 +3,47 @@ extends CanvasLayer
 # --- 1. EXPORTED REFERENCES ---
 @export var health_widget: HealthWidget
 @export var currency_widget: CurrencyWidget 
-@export var boss_health_widget: BossHealthWidget
 
 @onready var game_over_widget = $GameOverWidget 
 
-func setup_hud(player_ref: PlayerController, char_data: CharacterDef):
-	# 1. Initialize Health Widget
+func _ready():
+	# Observe the scene for the player
+	var player = get_tree().get_first_node_in_group("Player")
+	if player:
+		_initialize_with_player(player)
+	else:
+		# If player isn't spawned yet, wait for them
+		get_tree().node_added.connect(_on_node_added)
+
+func _on_node_added(node):
+	if node is PlayerController:
+		_initialize_with_player(node)
+		get_tree().node_added.disconnect(_on_node_added)
+
+func _initialize_with_player(player_ref: PlayerController):
+	var char_data = GameState.get_selected_character_data()
+	
 	if health_widget:
-		# MIDDLEWARE: Use get_current_health() instead of .current_health
 		health_widget.init_widget(char_data, player_ref.get_current_health())
-		
-		# Signals remain the same as they are emitted by the Controller
 		_safe_connect(player_ref.health_changed, health_widget._on_player_health_changed)
 		print("✅ HUD: Connected Player Health Signal")
 	else:
 		print("❌ HUD Error: Health Widget is not assigned!")
 
-	# 2. Initialize Currency Widget
+
 	if currency_widget:
-		# MIDDLEWARE: Use getters instead of direct property access
-		currency_widget.update_ui(
-			player_ref.get_gold(), 
-			player_ref.get_xp(), 
-			player_ref.get_xp_next()
-		)
-		
-		# Signals remain the same
+		currency_widget.update_ui(player_ref.get_gold(), player_ref.get_xp(), player_ref.get_xp_next())
 		_safe_connect(player_ref.currency_updated, currency_widget.update_ui)
 		print("✅ HUD: Connected Player Currency Signal")
 	else:
 		print("❌ HUD Error: Currency Widget is not assigned!")
 	
-
-# --- SETUP BOSS (Independent) ---
-func setup_boss_hud(boss_ref: MonsterController):
-	if not boss_health_widget: 
-		return
-	
-	# Boss logic remains direct for now as it hasn't been refactored to 3-tier yet
-	boss_health_widget.init_boss(boss_ref.monster_data, boss_ref.current_health)
-	_safe_connect(boss_ref.health_changed, boss_health_widget._on_boss_health_changed)
-
-func hide_boss_hud():
-	if boss_health_widget:
-		boss_health_widget.visible = false
+	# NEW: Observe the death signal
+	if not player_ref.player_died.is_connected(show_game_over_screen):
+		player_ref.player_died.connect(show_game_over_screen)
+		print("✅ HUD: Observing Player Death Signal")
+	else:
+		print("❌ HUD Error: Gameover Widget is not assigned!")
 
 func show_game_over_screen():
 	if game_over_widget:

@@ -57,13 +57,16 @@ func add_loot(type_id: int, amount: int) -> Dictionary:
 	var leveled_up = false
 	var final_level = current_level
 	
+	experience += amount
+	leveled_up = _check_level_up()
+	final_level = current_level
+	
 	match type_id:
 		0: # COIN
 			gold += amount
 		1: # GEM
-			experience += amount
-			leveled_up = _check_level_up()
-			final_level = current_level
+			gold += amount * 2
+			
 			
 	return {
 		"gold": gold,

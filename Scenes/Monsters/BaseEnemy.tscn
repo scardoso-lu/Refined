@@ -40,6 +40,7 @@ gradient = SubResource("Gradient_uq2xv")
 collision_layer = 4
 script = ExtResource("1_uq2xv")
 loot_scene = ExtResource("2_0ouli")
+drop_chance = 0.8
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=71990400]
 shape = SubResource("CapsuleShape2D_uq2xv")

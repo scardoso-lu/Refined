@@ -21,7 +21,7 @@ signal player_died
 @onready var view: PlayerView = $PlayerView 
 
 # --- LAYERS ---
-var repository: PlayerRepository # The Data Layer
+var repository: PlayerRepository = PlayerRepository.new()
 
 # --- STATE ---
 var _current_input_dir: float = 0.0
@@ -29,7 +29,6 @@ var gravity: float = ProjectSettings.get_setting("physics/2d/default_gravity")
 
 func _ready():
 	# 1. Initialize Repository (SERVER REPLACEMENT)
-	repository = PlayerRepository.new()
 	add_child(repository)
 	
 	if debug_character:
@@ -90,21 +89,6 @@ func deal_damage_in_hitbox():
 		if body.has_method("take_damage"):
 			body.take_damage(get_damage(), global_position)
 
-func take_damage(amount: int):
-	# 1. Update Data (Repository)
-	var new_hp = repository.apply_damage(amount)
-	
-	# 2. Update Visuals (View)
-	health_changed.emit(new_hp)
-	view.play_damage_effect()
-	
-	# 3. Check Logic
-	if new_hp <= 0:
-		die()
-
-func die():
-	print("Player Died! Transitioning to Death State...")
-	state_machine.change_move_state(state_machine.MoveState.DEATH)
 
 func collect_loot(type_id: int, amount: int):
 	# 1. Update Data
@@ -145,14 +129,21 @@ func restore_saved_state(hp: int, saved_gold: int, saved_xp: int, saved_level: i
 	repository._recalculate_stats() 
 
 # 2. GETTERS: For HUD Initialization (Repository -> Logic)
-func get_current_health() -> int:
+# Middleware Getters for Observers (HUD/GameState)
+func get_current_health() -> int: 
+	print(repository)
 	return repository.current_health
+func get_gold() -> int: return repository.gold
+func get_xp() -> int: return repository.experience
+func get_xp_next() -> int: return repository.xp_next_level
 
-func get_gold() -> int:
-	return repository.gold
+func take_damage(amount: int):
+	var new_hp = repository.apply_damage(amount)
+	health_changed.emit(new_hp)
 
-func get_xp() -> int:
-	return repository.experience
+	view.play_damage_effect()
 
-func get_xp_next() -> int:
-	return repository.xp_next_level
+	if new_hp <= 0:
+		print("Player Died! Transitioning to Death State...")
+		state_machine.change_move_state(state_machine.MoveState.DEATH)
+		player_died.emit()

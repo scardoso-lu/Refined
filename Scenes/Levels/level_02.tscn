@@ -3,7 +3,7 @@
 [ext_resource type="Script" uid="uid://cvhj1bplhsali" path="res://Scripts/Levels/level_manager.gd" id="1_06uw3"]
 [ext_resource type="PackedScene" uid="uid://nbgf1ghi40ls" path="res://Scenes/Player/player.tscn" id="2_ombkc"]
 [ext_resource type="PackedScene" uid="uid://d0bxpwvr7rro3" path="res://Scenes/Components/UI/HUD.tscn" id="3_es7ky"]
-[ext_resource type="Script" uid="uid://b0qh5xeacgia6" path="res://Scripts/Monsters/monster_spawner.gd" id="4_82bm0"]
+[ext_resource type="Script" uid="uid://b0qh5xeacgia6" path="res://Scripts/Levels/monster_spawner.gd" id="4_82bm0"]
 [ext_resource type="PackedScene" uid="uid://5txpbu6237gm" path="res://Scenes/Components/Global/portal.tscn" id="5_20c78"]
 [ext_resource type="Texture2D" uid="uid://ddv6k0lydr5bh" path="res://Assets/Sky Platform Tileset/earth_tile.png" id="6_enwln"]
 [ext_resource type="PackedScene" uid="uid://b08ldq0iqlwua" path="res://Scenes/Maps/level_01_back.tscn" id="7_72l3o"]

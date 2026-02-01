@@ -2,7 +2,8 @@ extends CharacterBody2D
 class_name MonsterController
 
 # --- Tiers ---
-var repository: MonsterRepository
+var repository: MonsterRepository = MonsterRepository.new()
+
 @onready var view: MonsterView = $MonsterView
 
 # --- Nodes ---
@@ -23,7 +24,6 @@ var player_ref: Node2D = null
 var gravity = ProjectSettings.get_setting("physics/2d/default_gravity")
 
 func _ready():
-	repository = MonsterRepository.new()
 	add_child(repository)
 	
 	state_machine.init(self)
