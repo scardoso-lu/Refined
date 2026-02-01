@@ -1,6 +1,7 @@
 extends Control
 class_name ShopWidget
 
+signal shop_opened(shop_id: String)
 # --- 1. STATE VARIABLES ---
 var current_player: PlayerController
 

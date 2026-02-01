@@ -29,18 +29,16 @@ follow_viewport = false
 
 [node name="Sprite2D" type="Sprite2D" parent="Mountains" unique_id=526819509]
 texture_filter = 1
-scale = Vector2(1.5, 1.5)
 texture = ExtResource("1_4n6c2")
 centered = false
 
 [node name="Trees" type="Parallax2D" parent="." unique_id=1935287127]
 z_index = -1
 scroll_scale = Vector2(0.9, 0.9)
-scroll_offset = Vector2(0, 141)
 repeat_size = Vector2(1920, 0)
 repeat_times = 4
 
 [node name="Sprite2D" type="Sprite2D" parent="Trees" unique_id=207012203]
-position = Vector2(0, -20)
+position = Vector2(0, -200)
 texture = ExtResource("3_gt8r3")
 centered = false

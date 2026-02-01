@@ -10,6 +10,7 @@ var zone_difficulty: float = 1.0
 func _ready():
 	# Connect global signal to player reward logic
 	monster_slain.connect(process_reward)
+	difficulty_updated.connect(get_difficulty_multiplier)
 
 func get_difficulty_multiplier() -> float:
 	var global_factor = (GameState.current_level - 1) * 0.1

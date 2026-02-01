@@ -16,12 +16,15 @@
 script = ExtResource("1_ea3dg")
 
 [node name="LeftControl" type="Control" parent="." unique_id=907908748]
+layout_direction = 4
 layout_mode = 3
-anchors_preset = 0
-offset_left = 72.0
-offset_top = 643.0
-offset_right = 253.0
-offset_bottom = 755.0
+anchors_preset = 4
+anchor_top = 0.5
+anchor_bottom = 0.5
+offset_top = -32.0
+offset_right = 200.0
+offset_bottom = 118.0
+grow_vertical = 2
 
 [node name="LeftButton" type="TouchScreenButton" parent="LeftControl" unique_id=1505391980]
 scale = Vector2(0.25, 65)
@@ -34,30 +37,34 @@ scale = Vector2(0.25, 65)
 texture_normal = SubResource("CurveTexture_ea3dg")
 action = "move_right"
 
-[node name="RightControl" type="Control" parent="LeftControl" unique_id=1456677043]
-layout_mode = 1
-anchor_left = -0.37800002
-anchor_top = -5.6280003
-anchor_right = -0.37800002
-anchor_bottom = -5.6280003
-offset_left = 1006.418
-offset_top = 524.33606
-offset_right = 1236.418
-offset_bottom = 655.33606
+[node name="RightControl" type="Control" parent="." unique_id=1456677043]
+layout_direction = 4
+layout_mode = 3
+anchors_preset = 6
+anchor_left = 1.0
+anchor_top = 0.5
+anchor_right = 1.0
+anchor_bottom = 0.5
+offset_left = -207.0
+offset_top = -73.0
+offset_right = -7.0
+offset_bottom = 77.0
+grow_horizontal = 0
+grow_vertical = 2
 
-[node name="JumpButton" type="TouchScreenButton" parent="LeftControl/RightControl" unique_id=769339810]
+[node name="JumpButton" type="TouchScreenButton" parent="RightControl" unique_id=769339810]
 position = Vector2(70, 0)
 scale = Vector2(0.25, 65)
 texture_normal = SubResource("CurveTexture_n3j50")
 action = "jump"
 
-[node name="AttackButton" type="TouchScreenButton" parent="LeftControl/RightControl" unique_id=1840240155]
+[node name="AttackButton" type="TouchScreenButton" parent="RightControl" unique_id=1840240155]
 position = Vector2(0, 80)
 scale = Vector2(0.25, 65)
 texture_normal = SubResource("CurveTexture_najke")
 action = "base_attack"
 
-[node name="InteractButton" type="TouchScreenButton" parent="LeftControl/RightControl" unique_id=391130798]
+[node name="InteractButton" type="TouchScreenButton" parent="RightControl" unique_id=391130798]
 position = Vector2(130, 80)
 scale = Vector2(0.25, 65)
 texture_normal = SubResource("CurveTexture_5kh1p")

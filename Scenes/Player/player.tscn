@@ -47,9 +47,10 @@ shape = SubResource("RectangleShape2D_uvnfx")
 script = ExtResource("2_a3d8c")
 
 [node name="Camera2D" type="Camera2D" parent="." unique_id=1451483163]
-position = Vector2(3, -350)
-limit_top = 800
-limit_bottom = 220
+limit_left = -9999985
+limit_top = 916
+limit_right = 10000015
+limit_bottom = 336
 
 [node name="PlayerView" type="Node" parent="." unique_id=169785757 groups=["Player"]]
 script = ExtResource("3_xpcdj")

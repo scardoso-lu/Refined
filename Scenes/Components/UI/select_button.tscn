@@ -29,4 +29,5 @@ theme_override_constants/outline_size = 5
 theme_override_styles/normal = SubResource("StyleBoxTexture_0baai")
 theme_override_styles/pressed = SubResource("StyleBoxTexture_gjb4e")
 theme_override_styles/hover = SubResource("StyleBoxTexture_ngl6f")
+action_mode = 0
 text = "SELECT"

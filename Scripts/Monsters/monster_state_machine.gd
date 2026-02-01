@@ -48,12 +48,12 @@ func physics_update(delta: float) -> void:
 func change_move_state(new_state: MoveState) -> void:
 	current_move_state = new_state
 
-func _move_idle(delta: float) -> void:
+func _move_idle(_delta: float) -> void:
 	monster.stop_moving()
 	if monster.has_target(): # Using middleware
 		change_move_state(MoveState.CHASE)
 
-func _move_chase(delta: float) -> void:
+func _move_chase(_delta: float) -> void:
 	if not monster.has_target():
 		change_move_state(MoveState.IDLE)
 		return

@@ -33,10 +33,6 @@ ShopItemDb="*uid://od5are5wqcgd"
 
 [display]
 
-window/size/viewport_width=1366
-window/size/viewport_height=768
-window/size/window_width_override=800
-window/size/window_height_override=600
 window/stretch/mode="canvas_items"
 window/stretch/aspect="expand"
 
