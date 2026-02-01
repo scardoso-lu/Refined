@@ -96,9 +96,13 @@ func _on_slot_button_pressed(slot_index: int):
 	if selected_id:
 		print("Selected Hero: ", selected_id)
 		# Ask GameState to load the data from disk
-		var saved_scene = GameState.load_game()		
 		GameState.selected_character_id = selected_id
-		print(saved_scene)
+
+		for i in range(slots.size()):
+			var btn = slots[i].get_node("SelectButton")
+			btn.focus_mode = Control.FOCUS_NONE # <--- ADDED
+		next_btn.focus_mode = Control.FOCUS_NONE # <--- ADDED
+		prev_btn.focus_mode = Control.FOCUS_NONE # <--- ADDED
 		#if saved_scene:
 			# If a file existed, jump straight to Level 50
 		#	get_tree().change_scene_to_file(saved_scene)

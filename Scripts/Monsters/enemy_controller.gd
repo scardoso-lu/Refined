@@ -1,192 +1,198 @@
 extends CharacterBody2D
 class_name MonsterController
 
-# --- NODES ---
+# =============================================================================
+# NODES
+# =============================================================================
 @onready var state_machine = $StateMachine
-@onready var sprite = $AnimatedSprite2D
+@onready var sprite: AnimatedSprite2D = $AnimatedSprite2D
 @onready var health_bar = $HealthBar
-@onready var floor_ray = $FloorRay
-@onready var attack_area = $AttackArea
-@onready var detection_area = $DetectionArea
+@onready var floor_ray: RayCast2D = $FloorRay
+@onready var attack_area: Area2D = $AttackArea
+@onready var detection_area: Area2D = $DetectionArea
 
-# --- DATA ---
+# =============================================================================
+# DATA
+# =============================================================================
 @export var monster_data: MonsterDef
-var current_health: int
+@export var difficulty_multiplier: float = 1.0
+
+@export_group("Loot")
+@export var loot_scene: PackedScene
+@export var drop_chance := 0.5
+@export var gold_value := 5
+
 var gravity = ProjectSettings.get_setting("physics/2d/default_gravity")
+var floating_text_scene := preload("res://Scenes/Components/Effects/DamageNumbers.tscn")
 
-# Adjust this path to wherever your damage text scene is located
-var floating_text_scene = preload("res://Scenes/Components/Effects/DamageNumbers.tscn")
-
-# --- LOOT CONFIGURATION ---
-@export_group("Loot Settings")
-@export var loot_scene: PackedScene 
-@export var drop_chance: float = 0.5
-@export var xp_value: int = 10
-@export var gold_value: int = 5
-
-# --- AI SENSORS ---
+# =============================================================================
+# STATE
+# =============================================================================
 var player_ref: Node2D = null
 
-func _ready():
-	# Initialize the Brain
-	state_machine.init(self)
-	
-	if monster_data:
-		setup_monster(monster_data)
+var max_health: float
+var current_health: float
+var current_damage: float
+var xp_reward: int
 
-func setup_monster(def: MonsterDef):
-	current_health = def.max_health
-	health_bar.max_value = def.max_health
-	health_bar.value = def.max_health
-	
+# =============================================================================
+# LIFECYCLE
+# =============================================================================
+func _ready():
+	state_machine.init(self)
+	if monster_data:
+		_setup_monster(monster_data)
+
+func _physics_process(delta):
+	_update_sensors()
+	state_machine.physics_update(delta)
+	move_and_slide()
+
+# =============================================================================
+# SETUP
+# =============================================================================
+func _setup_monster(def: MonsterDef):
+	_apply_scaling(def)
+	_setup_visuals(def)
+	_setup_detection(def)
+
+func _setup_visuals(def: MonsterDef):
 	if def.sprite_frames:
 		sprite.sprite_frames = def.sprite_frames
 		sprite.play("idle")
-		
-	# Apply scale from data
-	# Note: Be careful scaling collision shapes directly; usually better to scale visuals
 	sprite.scale = Vector2(def.scale, def.scale)
-	
-	# Setup aggro range safely
-	var circle = CircleShape2D.new()
-	circle.radius = def.aggro_range
-	$DetectionArea/CollisionShape2D.shape = circle
 
-func _physics_process(delta):
-	var player = player_ref
-	
-	# --- ADD THIS CHECK ---
-	if player and player.has_method("is_dead") and player.is_dead():
-		print("Target player dead! Continue...")
-		state_machine.change_move_state(state_machine.MoveState.IDLE)
-		player_ref = null
-		
-	# 1. Update Sensors (Flip floor ray to match movement direction)
+func _setup_detection(def: MonsterDef):
+	var shape := CircleShape2D.new()
+	shape.radius = def.aggro_range
+	$DetectionArea/CollisionShape2D.shape = shape
+
+# =============================================================================
+# SENSORS
+# =============================================================================
+func _update_sensors():
 	if velocity.x > 0:
 		floor_ray.position.x = abs(floor_ray.position.x)
 	elif velocity.x < 0:
 		floor_ray.position.x = -abs(floor_ray.position.x)
-	
-	# 2. Run Brain (State Machine handles Gravity, Logic, and Animation)
-	state_machine.physics_update(delta)
-	
-	# 3. Apply Movement (Result of gravity + brain logic)
-	move_and_slide()
 
-# ==============================================================================
-# PHYSICS & MOVEMENT API (Called by State Machine)
-# ==============================================================================
+	if player_ref and player_ref.has_method("is_dead") and player_ref.is_dead():
+		player_ref = null
+		state_machine.change_move_state(state_machine.MoveState.IDLE)
 
-func apply_gravity(delta: float):
+func has_target() -> bool:
+	return player_ref != null
+
+func get_target_position() -> Vector2:
+	return player_ref.global_position if player_ref else global_position
+
+func is_at_ledge() -> bool:
+	return is_on_floor() and not floor_ray.is_colliding()
+
+# =============================================================================
+# MOVEMENT API (USED BY STATE MACHINE)
+# =============================================================================
+func apply_gravity(delta):
 	if not is_on_floor():
 		velocity.y += gravity * delta
 
-func move_towards_target(target_pos: Vector2):
-	var dir = (target_pos - global_position).normalized()
-	velocity.x = dir.x * monster_data.speed
-	_flip_sprite(dir.x)
+func move_towards(pos: Vector2):
+	var dir = sign(pos.x - global_position.x)
+	velocity.x = dir * monster_data.speed
+	_flip(dir)
 
 func stop_moving():
-	# Apply friction to stop
 	velocity.x = move_toward(velocity.x, 0, 10)
 
-func is_at_ledge() -> bool:
-	# Returns true if we are on floor BUT the raycast sees nothing
-	return is_on_floor() and not floor_ray.is_colliding()
+func _flip(dir: float):
+	if dir == 0: return
+	sprite.flip_h = dir < 0
+	attack_area.scale.x = -1 if dir < 0 else 1
 
-func _flip_sprite(dir_x: float):
-	if dir_x > 0:
-		sprite.flip_h = false
-		attack_area.scale.x = 1 # Flip hitbox too
-	elif dir_x < 0:
-		sprite.flip_h = true
-		attack_area.scale.x = -1
-
-# ==============================================================================
-# COMBAT & HEALTH
-# ==============================================================================
-
-func deal_damage_to_player():
-	var bodies = attack_area.get_overlapping_bodies()
-	
-	for body in bodies:
+# =============================================================================
+# COMBAT
+# =============================================================================
+func deal_damage():
+	for body in attack_area.get_overlapping_bodies():
 		if body == self: continue
 		if body.has_method("take_damage"):
-			# Assuming monster_data has a 'damage' property
-			body.take_damage(monster_data.damage)
+			body.take_damage(int(current_damage))
 
-func take_damage(amount: int, source_pos: Vector2 = Vector2.ZERO):
+func take_damage(amount: int, source_pos := Vector2.ZERO):
 	current_health -= amount
-	
-	# Visual Feedback
-	_spawn_damage_text(amount)
 	_update_health_bar()
-	_flash_sprite()
-	
+	_flash()
+	_spawn_damage_text(amount)
+
 	if current_health <= 0:
-		# DEAD: Tell the brain to trigger the death sequence
 		state_machine.trigger_death()
 	else:
-		# HURT: Calculate knockback vector and tell brain to apply it
-		if source_pos != Vector2.ZERO:
-			var knock_dir = (global_position - source_pos).normalized()
-			var knock_force = Vector2(knock_dir.x * 200, -150) # Kick up and back
-			state_machine.apply_knockback(knock_force)
+		_apply_knockback(source_pos)
 
-# Called BY the State Machine (inside trigger_death)
+func _apply_knockback(source_pos: Vector2):
+	if source_pos == Vector2.ZERO: return
+	var dir := (global_position - source_pos).normalized()
+	state_machine.apply_knockback(Vector2(dir.x * 200, -150))
+
+# =============================================================================
+# DEATH & LOOT
+# =============================================================================
 func spawn_loot():
-	# 1. Validation
-	if loot_scene == null: return
-	
+	if not loot_scene: return
 	if randf() > drop_chance: return
 
-	# 2. Instantiate
 	var loot = loot_scene.instantiate()
-	
-	# 3. Configure (Coin vs Gem)
-	# Ensure your LootItem script uses the same Enum mapping (0=Coin, 1=Gem)
-	if randf() > 0.15:
-		loot.type = 0 # COIN
-		loot.value = gold_value
-	else:
-		loot.type = 1 # GEM
-		loot.value = xp_value
-		
-	# 4. Add to World (Critical: Do not add as child of self!)
+	loot.type = 0
+	loot.value = gold_value
+
 	get_parent().call_deferred("add_child", loot)
-	loot.global_position = global_position
-	
-	# Optional: Small random pop offset
-	loot.global_position += Vector2(randf_range(-10, 10), -10)
-	print(loot.value )
-	print(loot.type )
-# ==============================================================================
-# VISUAL HELPERS
-# ==============================================================================
+	loot.global_position = global_position + Vector2(randf_range(-10, 10), -10)
 
-func _spawn_damage_text(amount):
-	if floating_text_scene:
-		var text_instance = floating_text_scene.instantiate()
-		text_instance.set_values(amount, Color.YELLOW)
-		# Random offset so numbers don't stack perfectly
-		text_instance.global_position = global_position + Vector2(randf_range(-20, 20), -50)
-		get_tree().current_scene.add_child(text_instance)
+func get_xp_reward() -> int:
+	return xp_reward
 
+# =============================================================================
+# VISUALS
+# =============================================================================
 func _update_health_bar():
+	health_bar.max_value = max_health
 	health_bar.value = current_health
 	health_bar.visible = true
 
-func _flash_sprite():
+func _flash():
 	sprite.modulate = Color.RED
-	var tween = create_tween()
-	tween.tween_property(sprite, "modulate", Color.WHITE, 0.1)
+	create_tween().tween_property(sprite, "modulate", Color.WHITE, 0.1)
 
-# ==============================================================================
+func _spawn_damage_text(amount: int):
+	if not floating_text_scene: return
+	var txt = floating_text_scene.instantiate()
+	txt.set_values(amount, Color.YELLOW)
+	txt.global_position = global_position + Vector2(randf_range(-20, 20), -50)
+	get_tree().current_scene.add_child(txt)
+
+# =============================================================================
+# SCALING (n · log n – SAME PHILOSOPHY AS PLAYER)
+# =============================================================================
+func _apply_scaling(def: MonsterDef):
+	var level_zone = 1
+	var log_term := log(level_zone + 1)
+	var growth = level_zone * log_term
+
+	max_health = def.base_hp * pow(growth, 0.95) * difficulty_multiplier
+	max_health = max(5.0, max_health)
+	current_health = max_health
+
+	current_damage = def.base_damage * pow(growth, 0.85)
+	current_damage = max(1.0, current_damage)
+
+	xp_reward = int(def.base_xp * log_term * difficulty_multiplier)
+	xp_reward = max(1, xp_reward)
+
+# =============================================================================
 # SIGNALS
-# ==============================================================================
-
+# =============================================================================
 func _on_detection_area_body_entered(body):
-	if body.is_in_group("Player"): # Use Groups for safer detection
+	if body.is_in_group("Player"):
 		player_ref = body
 
 func _on_detection_area_body_exited(body):

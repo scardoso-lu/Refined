@@ -7,6 +7,7 @@
 [ext_resource type="PackedScene" uid="uid://dgih4bu67dl51" path="res://Scenes/Components/Player/GameOverWidget.tscn" id="5_y8w51"]
 
 [node name="CanvasLayer" type="CanvasLayer" unique_id=1272446120 node_paths=PackedStringArray("health_widget", "currency_widget", "boss_health_widget")]
+layer = -10
 script = ExtResource("1_vy4fw")
 health_widget = NodePath("HealthWidget")
 currency_widget = NodePath("CurrencyWidget")

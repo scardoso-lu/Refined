@@ -6,7 +6,7 @@ class_name HealthWidget
 
 func init_widget(char_data: CharacterDef, current_health: int):
 	if char_data:
-		health_bar.max_value = char_data.max_health
+		health_bar.max_value = char_data.base_max_health
 		if char_data.avatar_texture:
 			avatar.texture = char_data.avatar_texture
 	else:

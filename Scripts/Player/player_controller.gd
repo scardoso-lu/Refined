@@ -1,162 +1,158 @@
 extends CharacterBody2D
 class_name PlayerController
 
+# --- SIGNALS ---
 signal health_changed(new_amount)
-signal currency_updated(new_gold, xp, xp_next_max) # Must have 3 arguments!
+signal currency_updated(new_gold, xp, xp_next_max)
 signal level_up(new_level)
 signal player_died
 
-# --- Configuration ---
+# --- CONFIG ---
 @export_group("Debugging")
 @export var debug_character: CharacterDef
-@export_group("Physics")
-@export var acceleration: float = 1200.0
-@export var friction: float = 1600.0
 
-# --- Nodes ---
+# --- NODES ---
 @onready var state_machine = $StateMachine 
-@onready var sprite: AnimatedSprite2D = $AnimatedSprite2D
 @onready var coyote_timer: Timer = $CoyoteTimer
 @onready var collider: CollisionShape2D = $CollisionShape2D
 @onready var weapon_area = $WeaponArea
 
-# --- Variables ---
-var _stats: CharacterDef 
-var current_health: int
-var max_health: int
-var damage: int = 20 # Default, overwritten by stats
+# NEW: The View Layer
+@onready var view: PlayerView = $PlayerView 
 
-# Loot variables
-var gold: int = 0
-var experience: int = 0
-var xp_next_level: int = 100
-var current_level: int = 1
-var current_scene: String = "level_01.tscn"
+# --- LAYERS ---
+var repository: PlayerRepository # The Data Layer
 
+# --- STATE ---
+var _current_input_dir: float = 0.0
 var gravity: float = ProjectSettings.get_setting("physics/2d/default_gravity")
 
 func _ready():
-	state_machine.init(self)
-	add_to_group("Player")
+	# 1. Initialize Repository (SERVER REPLACEMENT)
+	repository = PlayerRepository.new()
+	add_child(repository)
 	
-	# Fix: Actually use the debug stats on startup
 	if debug_character:
 		setup_character(debug_character)
+	
+	state_machine.init(self)
+	
+	# 2. Connect View Signals (INPUT)
+	view.direction_changed.connect(func(dir): _current_input_dir = dir)
+	
+	# 3. Add to group (Game Logic)
+	add_to_group("Player")
 
 func setup_character(def: CharacterDef) -> void:
-	_stats = def
-	current_health = _stats.current_health
-	max_health = _stats.max_health
-	# Assuming CharacterDef has a damage value, otherwise keep default
-	# damage = _stats.damage 
+	# Push data to layers
+	repository.init(def)
+	view.setup_visuals(def)
 	
-	if _stats.sprite_frames:
-		sprite.sprite_frames = _stats.sprite_frames
-		sprite.play("idle")
-		
-	# Apply Hitbox Size
+	# Controller handles Physics Shape
 	if collider.shape is RectangleShape2D:
 		collider.shape.size = def.collider_size
 	elif collider.shape is CapsuleShape2D:
 		collider.shape.radius = def.collider_size.x / 2.0
 		collider.shape.height = def.collider_size.y
 
-# --- PHYSICS ---
+# --- PHYSICS LOOP ---
 func _physics_process(delta: float) -> void:
 	state_machine.physics_update(delta)
 	move_and_slide()
 
+# --- INPUT ---
+# Only forwarded to State Machine for specific logic triggers
 func _input(event):
 	state_machine.input_update(event)
 
-# --- PUBLIC API ---
+# --- PUBLIC API (For StateMachine & Game) ---
 
 func apply_gravity(delta: float) -> void:
 	velocity.y += gravity * delta
 
 func get_move_speed() -> float:
-	return _stats.speed if _stats else 300.0
+	return repository.get_base_move_speed()
 
 func get_jump_force() -> float:
-	return _stats.jump_velocity if _stats else -400.0
+	return repository.get_jump_force()
 
 func handle_movement_input(max_speed: float) -> void:
-	var direction := Input.get_axis("move_left", "move_right")
 	var delta = get_physics_process_delta_time()
-	
-	if direction:
-		# Smooth Acceleration
-		velocity.x = move_toward(velocity.x, direction * max_speed, acceleration * delta)
-		
-		# Visual Flipping
-		sprite.flip_h = direction < 0
-		# Flip weapon area using Scale (handles children/offsets automatically)
-		weapon_area.scale.x = -1 if direction < 0 else 1
-	else:
-		# Smooth Friction
-		velocity.x = move_toward(velocity.x, 0, friction * delta)
+	# Ask Repository to calculate velocity based on input direction
+	velocity.x = repository.compute_velocity_x(velocity.x, _current_input_dir, delta, max_speed)
 
 # --- COMBAT ---
 
-# Called by State Machine on specific animation frame
 func deal_damage_in_hitbox():
 	var bodies = weapon_area.get_overlapping_bodies()
 	for body in bodies:
 		if body == self: continue
 		if body.has_method("take_damage"):
-			# Pass self.global_position so enemy knows where knockback comes from
-			body.take_damage(damage, global_position)
+			body.take_damage(get_damage(), global_position)
 
 func take_damage(amount: int):
-	current_health -= amount
-	health_changed.emit(current_health)
+	# 1. Update Data (Repository)
+	var new_hp = repository.apply_damage(amount)
 	
-	sprite.modulate = Color.RED
-	await get_tree().create_timer(0.1).timeout
-	sprite.modulate = Color.WHITE
+	# 2. Update Visuals (View)
+	health_changed.emit(new_hp)
+	view.play_damage_effect()
 	
-	if current_health <= 0:
+	# 3. Check Logic
+	if new_hp <= 0:
 		die()
 
 func die():
 	print("Player Died! Transitioning to Death State...")
-	# Reloading scene is fine for now
 	state_machine.change_move_state(state_machine.MoveState.DEATH)
 
-		
 func collect_loot(type_id: int, amount: int):
-	match type_id:
-		0: # COIN
-			gold += amount
-		1: # GEM
-			experience += amount
-			_check_level_up()
-	print("updating player loot")
-	# Update UI immediately
-	currency_updated.emit(gold, experience, xp_next_level)
-
-func _check_level_up():
-	# While loop allows multiple level ups at once (big XP drops)
-	while experience >= xp_next_level:
-		experience -= xp_next_level
-		current_level += 1
-		
-		# Curve: Increases by 50% each level
-		xp_next_level = int(xp_next_level * 1.5)
-		
-		# Full Heal on Level Up
-		current_health = _stats.max_health # Assuming you use _stats from CharacterDef
-		health_changed.emit(current_health)
-		
-		# Visual/Audio feedback
-		level_up.emit(current_level)
-		_play_level_up_effect()
-
-func _play_level_up_effect():
-	# Simple flash green
-	var tween = create_tween()
-	sprite.modulate = Color.GREEN
-	tween.tween_property(sprite, "modulate", Color.WHITE, 0.5)
+	# 1. Update Data
+	var result = repository.add_loot(type_id, amount)
+	
+	# 2. Update UI
+	currency_updated.emit(result.gold, result.xp, result.xp_next)
+	
+	if result.leveled_up:
+		view.play_level_up_effect()
+		level_up.emit(result.level)
+		health_changed.emit(repository.current_health)
 
 func is_dead() -> bool:
-	return current_health <= 0
+	return repository.current_health <= 0
+
+func get_damage() -> int:	
+	return repository.get_outgoing_damage()
+	
+func get_level() -> int:
+	return repository.current_level
+
+func get_current_scene() -> String:
+	return repository.current_scene
+	
+# PERSISTENCE API (The Middleware)
+# =============================================================================
+
+# 1. SETTER: Restore data from GameState (Logic -> Repository)
+func restore_saved_state(hp: int, saved_gold: int, saved_xp: int, saved_level: int) -> void:
+	# The Controller validates/passes data to the Repository
+	repository.current_health = hp
+	repository.gold = saved_gold
+	repository.experience = saved_xp
+	repository.current_level = saved_level
+	
+	# Optional: Sync internal math in case level changed without "leveling up" logic
+	repository._recalculate_stats() 
+
+# 2. GETTERS: For HUD Initialization (Repository -> Logic)
+func get_current_health() -> int:
+	return repository.current_health
+
+func get_gold() -> int:
+	return repository.gold
+
+func get_xp() -> int:
+	return repository.experience
+
+func get_xp_next() -> int:
+	return repository.xp_next_level

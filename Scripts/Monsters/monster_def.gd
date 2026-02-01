@@ -6,10 +6,10 @@ extends Resource
 @export var scale: float = 1.0
 
 @export_group("Stats")
-@export var max_health: int = 100
-@export var damage: int = 10
+@export var base_hp: int = 100
+@export var base_damage: int = 10
+@export var base_xp: int = 100
 @export var speed: float = 80.0
-
 
 @export_group("AI Behavior")
 @export var aggro_range: float = 200.0 # How far it sees you

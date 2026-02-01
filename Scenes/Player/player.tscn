@@ -2,10 +2,11 @@
 
 [ext_resource type="Script" uid="uid://bl8silfvs6guk" path="res://Scripts/Player/player_controller.gd" id="1_uvnfx"]
 [ext_resource type="Script" uid="uid://qnv1j0dchckn" path="res://Scripts/Player/player_state_machine.gd" id="2_a3d8c"]
+[ext_resource type="Script" uid="uid://cd1igap8mx5wf" path="res://Scripts/Player/player_view.gd" id="3_xpcdj"]
 
 [sub_resource type="CapsuleShape2D" id="CapsuleShape2D_eksi1"]
-radius = 68.0
-height = 142.0
+radius = 152.45
+height = 304.9
 
 [sub_resource type="SpriteFrames" id="SpriteFrames_uvnfx"]
 animations = [{
@@ -16,7 +17,7 @@ animations = [{
 }]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_uvnfx"]
-size = Vector2(800, 500)
+size = Vector2(400, 200)
 
 [node name="Player" type="CharacterBody2D" unique_id=509850614 groups=["Player"]]
 collision_layer = 2
@@ -49,5 +50,8 @@ script = ExtResource("2_a3d8c")
 position = Vector2(3, -350)
 limit_top = 800
 limit_bottom = 220
+
+[node name="PlayerView" type="Node" parent="." unique_id=169785757]
+script = ExtResource("3_xpcdj")
 
 [connection signal="body_entered" from="WeaponArea" to="." method="_on_weapon_area_body_entered"]

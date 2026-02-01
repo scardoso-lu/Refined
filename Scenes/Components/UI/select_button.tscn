@@ -1,4 +1,4 @@
-[gd_scene load_steps=5 format=3 uid="uid://dvo8e14hgyib7"]
+[gd_scene format=3 uid="uid://dvo8e14hgyib7"]
 
 [ext_resource type="Texture2D" uid="uid://c5i6ix3apkfwf" path="res://Assets/Textures/select-button.png" id="1_vpw7r"]
 
@@ -20,8 +20,9 @@ texture = ExtResource("1_vpw7r")
 [sub_resource type="StyleBoxTexture" id="StyleBoxTexture_ngl6f"]
 texture = ExtResource("1_vpw7r")
 
-[node name="SelectButton" type="Button"]
+[node name="SelectButton" type="Button" unique_id=1831016064]
 custom_minimum_size = Vector2(50, 50)
+focus_mode = 1
 theme_override_colors/font_color = Color(0, 0, 0, 1)
 theme_override_colors/font_outline_color = Color(1, 1, 1, 1)
 theme_override_constants/outline_size = 5

@@ -27,29 +27,26 @@ func _on_body_entered(body):
 		# Only the Player can trigger portals
 		print("Body entered on portal", body)
 		
-		# --- STEP 1: SAVE STATE TO RAM ---
-		# Snapshots the player's current Health, Gold, and XP into the Global GameState.
-		# This ensures they don't reset to full health in the next room.
-		if GameState.has_method("save_player_state"):
-			GameState.save_player_state(body)
-			
-			# --- STEP 2: SAVE TO DISK (Optional) ---
-			# Persist progress so they can "Continue" after closing the game.
-			# We save the *Next Scene* as the resume point.
-		if auto_save_on_enter and GameState.has_method("save_game"):
-			if next_scene_path != "":
-				GameState.save_game(next_scene_path)
+		# 1. Update Local Cache (For the next Godot scene load)
+		GameState.update_session_cache(
+			body.get_current_health(),
+			body.get_gold(),
+			body.get_xp(),
+			body.get_level()
+		)
 		
-			# --- STEP 3: PREPARE DESTINATION ---
-			# Tell GameState which Marker2D to look for in the new scene.
-		GameState.target_spawn_tag = target_spawn_tag
-			
+		# 2. Send Request to Server (The Authoritative move)
+		# This is where your Go Server registers that the player 
+		# is now at the entrance of the next map.
+		# NetworkGate.request_map_change(target_scene)
+					
 		# --- STEP 4: CHANGE SCENE ---
 		if next_scene_path == "":
 			push_error("❌ PORTAL ERROR: No 'next_scene_path' assigned in Inspector!")
 			return
-				
-			# Use call_deferred to safely switch scenes during a physics callback
+		
+			# 3. Change Scene locally				
+		# Use call_deferred to safely switch scenes during a physics callback
 		call_deferred("_change_scene_safe")
 
 func _change_scene_safe():

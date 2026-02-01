@@ -91,7 +91,7 @@ func _move_chase(delta: float) -> void:
 	
 	# 4. Move
 	if speed_modifier > 0:
-		monster.move_towards_target(monster.player_ref.global_position)
+		monster.move_towards(monster.player_ref.global_position)
 		monster.velocity.x *= speed_modifier
 	else:
 		monster.stop_moving()
@@ -148,7 +148,7 @@ func _action_attack(_delta: float) -> void:
 	# 2. Damage Logic (Sync with animation frame)
 	# Assuming the "hit" happens on frame 4 or 5
 	if monster.sprite.frame >= 4 and not has_dealt_damage:
-		monster.deal_damage_to_player()
+		monster.deal_damage()
 		has_dealt_damage = true
 
 	# 3. End Logic
