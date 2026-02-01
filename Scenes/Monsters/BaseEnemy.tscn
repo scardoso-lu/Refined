@@ -3,6 +3,7 @@
 [ext_resource type="Script" uid="uid://bp86kc0k7pfr5" path="res://Scripts/Monsters/enemy_controller.gd" id="1_uq2xv"]
 [ext_resource type="PackedScene" uid="uid://kg76jqturayc" path="res://Scenes/Components/Effects/LootItem.tscn" id="2_0ouli"]
 [ext_resource type="Script" uid="uid://b3l5fu3stpcfi" path="res://Scripts/Monsters/monster_state_machine.gd" id="2_sw3yv"]
+[ext_resource type="Script" uid="uid://da8u6eteha3ob" path="res://Scripts/Monsters/monster_view.gd" id="4_3byci"]
 
 [sub_resource type="CapsuleShape2D" id="CapsuleShape2D_uq2xv"]
 
@@ -83,6 +84,9 @@ texture_progress = SubResource("GradientTexture1D_0ouli")
 
 [node name="StateMachine" type="Node" parent="." unique_id=1660070856]
 script = ExtResource("2_sw3yv")
+
+[node name="MonsterView" type="Node" parent="." unique_id=327461822]
+script = ExtResource("4_3byci")
 
 [connection signal="body_entered" from="DetectionArea" to="." method="_on_detection_area_body_entered"]
 [connection signal="body_exited" from="DetectionArea" to="." method="_on_detection_area_body_exited"]
