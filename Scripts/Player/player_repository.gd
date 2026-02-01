@@ -118,3 +118,12 @@ func _recalculate_stats():
 
 func _scaled_n_log_n(n: float) -> float:
 	return n * log(n + 1.0)
+
+func try_purchase_item(item: ItemDef) -> bool:
+	# 1. Validation (The "Guard Clause")
+	if gold < item.cost:
+		return false
+
+	# 2. Transaction
+	gold -= item.cost		
+	return true

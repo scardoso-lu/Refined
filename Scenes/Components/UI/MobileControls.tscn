@@ -1,0 +1,64 @@
+[gd_scene format=3 uid="uid://cn5xr50bisyfw"]
+
+[ext_resource type="Script" uid="uid://dkssslatn343w" path="res://Scripts/Global/mobile_controls.gd" id="1_ea3dg"]
+
+[sub_resource type="CurveTexture" id="CurveTexture_ub33m"]
+
+[sub_resource type="CurveTexture" id="CurveTexture_ea3dg"]
+
+[sub_resource type="CurveTexture" id="CurveTexture_n3j50"]
+
+[sub_resource type="CurveTexture" id="CurveTexture_najke"]
+
+[sub_resource type="CurveTexture" id="CurveTexture_5kh1p"]
+
+[node name="MobileControls" type="CanvasLayer" unique_id=375067283]
+script = ExtResource("1_ea3dg")
+
+[node name="LeftControl" type="Control" parent="." unique_id=907908748]
+layout_mode = 3
+anchors_preset = 0
+offset_left = 72.0
+offset_top = 643.0
+offset_right = 253.0
+offset_bottom = 755.0
+
+[node name="LeftButton" type="TouchScreenButton" parent="LeftControl" unique_id=1505391980]
+scale = Vector2(0.25, 65)
+texture_normal = SubResource("CurveTexture_ub33m")
+action = "move_left"
+
+[node name="RightButton" type="TouchScreenButton" parent="LeftControl" unique_id=206308049]
+position = Vector2(100, 0)
+scale = Vector2(0.25, 65)
+texture_normal = SubResource("CurveTexture_ea3dg")
+action = "move_right"
+
+[node name="RightControl" type="Control" parent="LeftControl" unique_id=1456677043]
+layout_mode = 1
+anchor_left = -0.37800002
+anchor_top = -5.6280003
+anchor_right = -0.37800002
+anchor_bottom = -5.6280003
+offset_left = 1006.418
+offset_top = 524.33606
+offset_right = 1236.418
+offset_bottom = 655.33606
+
+[node name="JumpButton" type="TouchScreenButton" parent="LeftControl/RightControl" unique_id=769339810]
+position = Vector2(70, 0)
+scale = Vector2(0.25, 65)
+texture_normal = SubResource("CurveTexture_n3j50")
+action = "jump"
+
+[node name="AttackButton" type="TouchScreenButton" parent="LeftControl/RightControl" unique_id=1840240155]
+position = Vector2(0, 80)
+scale = Vector2(0.25, 65)
+texture_normal = SubResource("CurveTexture_najke")
+action = "base_attack"
+
+[node name="InteractButton" type="TouchScreenButton" parent="LeftControl/RightControl" unique_id=391130798]
+position = Vector2(130, 80)
+scale = Vector2(0.25, 65)
+texture_normal = SubResource("CurveTexture_5kh1p")
+action = "interact"

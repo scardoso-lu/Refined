@@ -5,6 +5,7 @@
 [ext_resource type="PackedScene" uid="uid://5s1d5q1ua43v" path="res://Scenes/Components/Player/HealthWidget.tscn" id="3_rxb6u"]
 [ext_resource type="PackedScene" uid="uid://crica5ogdvqx4" path="res://Scenes/Shop/ShopWidget.tscn" id="5_tcqxm"]
 [ext_resource type="PackedScene" uid="uid://dgih4bu67dl51" path="res://Scenes/Components/Player/GameOverWidget.tscn" id="5_y8w51"]
+[ext_resource type="PackedScene" uid="uid://cn5xr50bisyfw" path="res://Scenes/Components/UI/MobileControls.tscn" id="6_tcqxm"]
 
 [node name="CanvasLayer" type="CanvasLayer" unique_id=1272446120 node_paths=PackedStringArray("health_widget", "currency_widget")]
 layer = -10
@@ -32,3 +33,5 @@ offset_right = 650.0
 offset_bottom = 420.0
 
 [node name="ShopWidget" parent="." unique_id=1092002215 instance=ExtResource("5_tcqxm")]
+
+[node name="MobileControls" parent="." unique_id=375067283 instance=ExtResource("6_tcqxm")]

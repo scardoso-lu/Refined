@@ -149,9 +149,9 @@ func take_damage(amount: int):
 		player_died.emit()
 
 # Called by the Shop UI when a button is clicked
-func try_purchase(cost: int, item_effect_id: String) -> bool:
-	if repository.gold >= cost:
-		repository.gold -= cost
+func purchase_item(item_def: ItemDef) -> bool:
+	var success = repository.try_purchase_item(item_def)
+	if success:
 		# ... apply effect ...
 		currency_updated.emit(
 			repository.gold, 

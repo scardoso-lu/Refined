@@ -14,17 +14,8 @@ var current_player: PlayerController
 @onready var close_btn = $Panel/VBoxContainer/CloseButton
 @onready var item_grid =  $Panel/VBoxContainer/ItemGrid
 
-# --- 4. DATA (Ideally this moves to a Resource/DB later) ---
-var shop_inventories = {
-	"village_blacksmith": [
-		{"id": "potion_heal", "name": "Health Potion", "cost": 50},
-		{"id": "upgrade_sword", "name": "Sharpen Sword (+5 Dmg)", "cost": 150}
-	],
-	"wandering_trader": [
-		{"id": "potion_max", "name": "Full Restore", "cost": 200},
-		{"id": "mega_bomb", "name": "Mega Bomb", "cost": 500}
-	]
-}
+@export var shop_items_village: Array[ItemDef] = []
+@export var shop_items_trader: Array[ItemDef] = []
 
 # --- 5. INITIALIZATION ---
 func _ready() -> void:
@@ -68,38 +59,34 @@ func _on_shop_opened(shop_id: String) -> void:
 
 # --- 7. DYNAMIC POPULATION ---
 func _populate_grid(shop_id: String):
-	# A. Clear existing buttons (from previous opens)
+	# Clear old buttons...
 	for child in item_grid.get_children():
 		child.queue_free()
 	
-	# B. Get the list for this specific shop
-	var items = shop_inventories.get(shop_id, [])
-	
-	# C. Create a button for each item
-	for item in items:
+	# 1. Select the correct Resource List
+	var items_to_show = ShopItemDb.get_items_for_shop(shop_id)
+
+	# 2. Create Buttons from Data
+	for item in items_to_show:
 		var btn = item_button_scene.instantiate() as Button
 		
-		# Set Visuals
+		# Display Data
 		btn.text = "%s\n%dg" % [item.name, item.cost]
 		
-		# Connect Signal (Using Bind/Lambda to pass data)
-		btn.pressed.connect(func(): _attempt_purchase(item.cost, item.id))
+		# Connect Signal (Pass the whole Resource object!)
+		btn.pressed.connect(func(): _attempt_purchase(item))
 		
-		# Add to Scene
 		item_grid.add_child(btn)
 
-# --- 8. TRANSACTION LOGIC ---
-func _attempt_purchase(cost: int, item_id: String) -> void:
+func _attempt_purchase(item: ItemDef) -> void:
 	if not current_player: return
 	
-	var success = current_player.try_purchase(cost, item_id)
+	# Pass the resource to the controller
+	var success = current_player.purchase_item(item)
 	
 	if success:
-		print("💰 Bought: ", item_id)
-		# Optional: Play sound
+		print("💰 Bought: ", item.name)
 	else:
 		print("❌ Too expensive!")
-		# Optional: Shake screen or flash red
-
 func _close_shop() -> void:
 	hide()
