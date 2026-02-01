@@ -3,6 +3,7 @@ extends Node
 # Global Signals for component communication
 signal difficulty_updated(new_mult)
 signal monster_slain(xp_reward)
+signal shop_opened(shop_id: String)
 
 var zone_difficulty: float = 1.0
 

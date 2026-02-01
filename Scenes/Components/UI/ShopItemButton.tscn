@@ -1,0 +1,5 @@
+[gd_scene format=3 uid="uid://bi0hv1hwnkk48"]
+
+[node name="BuyButton" type="Button" unique_id=1831016064]
+custom_minimum_size = Vector2(100, 50)
+focus_mode = 1

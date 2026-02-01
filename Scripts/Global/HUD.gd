@@ -32,7 +32,7 @@ func _initialize_with_player(player_ref: PlayerController):
 
 
 	if currency_widget:
-		currency_widget.update_ui(player_ref.get_gold(), player_ref.get_xp(), player_ref.get_xp_next())
+		currency_widget.update_ui(player_ref.get_gold(), player_ref.get_level(), player_ref.get_xp(), player_ref.get_xp_next())
 		_safe_connect(player_ref.currency_updated, currency_widget.update_ui)
 		print("✅ HUD: Connected Player Currency Signal")
 	else:
@@ -48,6 +48,9 @@ func _initialize_with_player(player_ref: PlayerController):
 func show_game_over_screen():
 	if game_over_widget:
 		game_over_widget.show_game_over()
+	else:
+		# Fallback if you haven't assigned the widget in the inspector
+		print("💀 Game Over! (HUD widget missing, check Inspector)")
 
 # Helper
 func _safe_connect(sig: Signal, method: Callable):

@@ -1,0 +1,39 @@
+[gd_scene format=3 uid="uid://crica5ogdvqx4"]
+
+[ext_resource type="Script" uid="uid://b4mlgjm7wnnd8" path="res://Scripts/Shop/shop_widget.gd" id="1_xc777"]
+[ext_resource type="PackedScene" uid="uid://bi0hv1hwnkk48" path="res://Scenes/Components/UI/ShopItemButton.tscn" id="2_4vemd"]
+[ext_resource type="PackedScene" uid="uid://bla84ak0eox64" path="res://Scenes/Components/UI/close_button.tscn" id="3_5o2l4"]
+
+[node name="ShopWidget" type="Control" unique_id=1092002215]
+process_mode = 3
+layout_mode = 3
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_xc777")
+item_button_scene = ExtResource("2_4vemd")
+
+[node name="Panel" type="Panel" parent="." unique_id=329563704]
+layout_mode = 0
+offset_right = 40.0
+offset_bottom = 40.0
+
+[node name="VBoxContainer" type="VBoxContainer" parent="Panel" unique_id=1033606500]
+layout_mode = 0
+offset_right = 40.0
+offset_bottom = 40.0
+
+[node name="TitleLabel" type="Label" parent="Panel/VBoxContainer" unique_id=820046611]
+layout_mode = 2
+text = "Village Blacksmith"
+
+[node name="ItemGrid" type="GridContainer" parent="Panel/VBoxContainer" unique_id=79252779]
+layout_mode = 2
+columns = 2
+
+[node name="CloseButton" parent="Panel/VBoxContainer" unique_id=1626792290 instance=ExtResource("3_5o2l4")]
+layout_mode = 2

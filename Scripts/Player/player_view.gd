@@ -49,9 +49,19 @@ func play_damage_effect():
 	tween.tween_property(sprite, "modulate", Color.WHITE, 0.1)
 
 func play_level_up_effect():
-	sprite.modulate = Color.GREEN
+# 1. Visual Flash (Gold color)
 	var tween = create_tween()
+	sprite.modulate = Color(1.5, 1.5, 0.5) # Glow bright yellow
 	tween.tween_property(sprite, "modulate", Color.WHITE, 0.5)
-
+	
+	# 2. Scale Bounce (Pop effect)
+	var scale_tween = create_tween()
+	scale_tween.tween_property(sprite, "scale", Vector2(1.2, 1.2), 0.1)
+	scale_tween.tween_property(sprite, "scale", Vector2(1.0, 1.0), 0.2)
+	
+	# 3. (Optional) Particles
+	# If you have a particle node named LevelUpParticles attached to the view:
+	# $LevelUpParticles.emitting = true
+	
 func get_current_animation() -> String:
 	return sprite.animation

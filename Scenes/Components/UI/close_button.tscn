@@ -1,0 +1,27 @@
+[gd_scene format=3 uid="uid://bla84ak0eox64"]
+
+[ext_resource type="Texture2D" uid="uid://cx88r1fpk56g4" path="res://Assets/Textures/Red close button with-nobg.png" id="1_0hpp8"]
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_0baai"]
+content_margin_left = 10.0
+content_margin_top = 10.0
+content_margin_right = 10.0
+content_margin_bottom = 10.0
+texture = ExtResource("1_0hpp8")
+modulate_color = Color(0.8666667, 0.8666667, 0.8666667, 1)
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_gjb4e"]
+texture = ExtResource("1_0hpp8")
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_ngl6f"]
+texture = ExtResource("1_0hpp8")
+
+[node name="CloseButton" type="Button" unique_id=1831016064]
+custom_minimum_size = Vector2(50, 50)
+focus_mode = 1
+theme_override_colors/font_color = Color(0, 0, 0, 1)
+theme_override_colors/font_outline_color = Color(1, 1, 1, 1)
+theme_override_constants/outline_size = 5
+theme_override_styles/normal = SubResource("StyleBoxTexture_0baai")
+theme_override_styles/pressed = SubResource("StyleBoxTexture_gjb4e")
+theme_override_styles/hover = SubResource("StyleBoxTexture_ngl6f")

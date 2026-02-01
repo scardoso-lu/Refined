@@ -4,10 +4,12 @@ class_name CurrencyWidget
 # Adjust paths relative to THIS node
 @onready var gold_label = $HBoxContainer/GoldLabel
 @onready var xp_label = $HBoxContainer/XPLabel
+@onready var level_label = $HBoxContainer/LevelLabel
 
-func update_ui(gold: int, xp: int, max_xp: int):
+func update_ui(gold: int, xp: int, level: int, max_xp: int):
 	gold_label.text = str(gold)
 	xp_label.text = "XP: %d / %d" % [xp, max_xp]
+	level_label.text = str(level)
 	print("gold_label", gold_label)
 	print("XP label" ,xp_label.text )
 	# Optional Pop Effect

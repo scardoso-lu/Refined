@@ -1,0 +1,18 @@
+[gd_scene format=3 uid="uid://ltkpnqk4kgf4"]
+
+[ext_resource type="Script" uid="uid://b820a72jkihb2" path="res://Scripts/Shop/merchant.gd" id="1_w5435"]
+[ext_resource type="SpriteFrames" uid="uid://cub3uopnille2" path="res://Data/Global/shop.tres" id="2_2c06a"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_ywe25"]
+size = Vector2(200, 300)
+
+[node name="Area2D" type="Area2D" unique_id=527819300]
+collision_layer = 16
+collision_mask = 2
+script = ExtResource("1_w5435")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=1067302327]
+shape = SubResource("RectangleShape2D_ywe25")
+
+[node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="CollisionShape2D" unique_id=588639933]
+sprite_frames = ExtResource("2_2c06a")

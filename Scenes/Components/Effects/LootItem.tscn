@@ -1,18 +1,18 @@
-[gd_scene load_steps=4 format=3 uid="uid://kg76jqturayc"]
+[gd_scene format=3 uid="uid://kg76jqturayc"]
 
 [ext_resource type="Script" uid="uid://bvair2nogol57" path="res://Scripts/Components/loot_item.gd" id="1_ymlhh"]
-[ext_resource type="Texture2D" uid="uid://vc30gh4eqyi8" path="res://Assets/Textures/xp_coin.png" id="2_1kbqv"]
+[ext_resource type="SpriteFrames" uid="uid://bh4jrpgs8gocx" path="res://Data/Global/gold_coin.tres" id="2_1kbqv"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_sag1t"]
 size = Vector2(64, 64)
 
-[node name="Area2D" type="Area2D" groups=["Player"]]
+[node name="Area2D" type="Area2D" unique_id=1616248489 groups=["Player"]]
 collision_layer = 3
 collision_mask = 3
 script = ExtResource("1_ymlhh")
 
-[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+[node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=1316330576]
 shape = SubResource("RectangleShape2D_sag1t")
 
-[node name="Sprite2D" type="Sprite2D" parent="CollisionShape2D"]
-texture = ExtResource("2_1kbqv")
+[node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="CollisionShape2D" unique_id=132040225]
+sprite_frames = ExtResource("2_1kbqv")

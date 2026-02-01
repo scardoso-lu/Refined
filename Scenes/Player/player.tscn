@@ -51,7 +51,7 @@ position = Vector2(3, -350)
 limit_top = 800
 limit_bottom = 220
 
-[node name="PlayerView" type="Node" parent="." unique_id=169785757]
+[node name="PlayerView" type="Node" parent="." unique_id=169785757 groups=["Player"]]
 script = ExtResource("3_xpcdj")
 
 [connection signal="body_entered" from="WeaponArea" to="." method="_on_weapon_area_body_entered"]

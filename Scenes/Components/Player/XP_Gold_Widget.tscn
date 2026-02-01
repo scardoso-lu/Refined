@@ -1,21 +1,24 @@
-[gd_scene load_steps=2 format=3 uid="uid://cw0hilcifiit2"]
+[gd_scene format=3 uid="uid://cw0hilcifiit2"]
 
 [ext_resource type="Script" uid="uid://c7ghxnmg1g62j" path="res://Scripts/Components/xp_gold_widget.gd" id="1_xjqas"]
 
-[node name="Control" type="Control"]
+[node name="Control" type="Control" unique_id=806079334]
 layout_mode = 3
 anchors_preset = 0
 offset_right = 40.0
 offset_bottom = 40.0
 script = ExtResource("1_xjqas")
 
-[node name="HBoxContainer" type="HBoxContainer" parent="."]
+[node name="HBoxContainer" type="HBoxContainer" parent="." unique_id=1531456024]
 layout_mode = 0
 offset_right = 40.0
 offset_bottom = 40.0
 
-[node name="GoldLabel" type="Label" parent="HBoxContainer"]
+[node name="GoldLabel" type="Label" parent="HBoxContainer" unique_id=1447306250]
 layout_mode = 2
 
-[node name="XPLabel" type="Label" parent="HBoxContainer"]
+[node name="XPLabel" type="Label" parent="HBoxContainer" unique_id=62438648]
+layout_mode = 2
+
+[node name="LevelLabel" type="Label" parent="HBoxContainer" unique_id=441940556]
 layout_mode = 2

@@ -3,6 +3,7 @@
 [ext_resource type="Script" uid="uid://cdu0ng7kq12nh" path="res://Scripts/Global/HUD.gd" id="1_vy4fw"]
 [ext_resource type="PackedScene" uid="uid://cw0hilcifiit2" path="res://Scenes/Components/Player/XP_Gold_Widget.tscn" id="2_6wa13"]
 [ext_resource type="PackedScene" uid="uid://5s1d5q1ua43v" path="res://Scenes/Components/Player/HealthWidget.tscn" id="3_rxb6u"]
+[ext_resource type="PackedScene" uid="uid://crica5ogdvqx4" path="res://Scenes/Shop/ShopWidget.tscn" id="5_tcqxm"]
 [ext_resource type="PackedScene" uid="uid://dgih4bu67dl51" path="res://Scenes/Components/Player/GameOverWidget.tscn" id="5_y8w51"]
 
 [node name="CanvasLayer" type="CanvasLayer" unique_id=1272446120 node_paths=PackedStringArray("health_widget", "currency_widget")]
@@ -29,3 +30,5 @@ offset_left = 450.0
 offset_top = 300.0
 offset_right = 650.0
 offset_bottom = 420.0
+
+[node name="ShopWidget" parent="." unique_id=1092002215 instance=ExtResource("5_tcqxm")]

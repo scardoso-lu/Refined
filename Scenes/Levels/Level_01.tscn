@@ -2,6 +2,7 @@
 
 [ext_resource type="Script" uid="uid://cvhj1bplhsali" path="res://Scripts/Levels/level_manager.gd" id="1_tqmcp"]
 [ext_resource type="PackedScene" uid="uid://nbgf1ghi40ls" path="res://Scenes/Player/player.tscn" id="1_ygytw"]
+[ext_resource type="PackedScene" uid="uid://ltkpnqk4kgf4" path="res://Scenes/Shop/Merchant.tscn" id="6_gw1is"]
 [ext_resource type="Script" uid="uid://b0qh5xeacgia6" path="res://Scripts/Levels/monster_spawner.gd" id="6_taws2"]
 [ext_resource type="PackedScene" uid="uid://5txpbu6237gm" path="res://Scenes/Components/Global/portal.tscn" id="7_bmcj7"]
 [ext_resource type="Texture2D" uid="uid://ddv6k0lydr5bh" path="res://Assets/Sky Platform Tileset/earth_tile.png" id="7_mb1if"]
@@ -100,6 +101,10 @@ position = Vector2(3727, 763)
 next_scene_path = "uid://crwogwaktqdca"
 target_spawn_tag = "PlayerSpawnPoint"
 auto_save_on_enter = false
+
+[node name="Merchant" parent="." unique_id=527819300 instance=ExtResource("6_gw1is")]
+process_mode = 3
+position = Vector2(0, 810)
 
 [node name="Level" type="Node2D" parent="." unique_id=516581296]
 

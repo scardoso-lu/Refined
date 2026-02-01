@@ -3,7 +3,7 @@ class_name PlayerController
 
 # --- SIGNALS ---
 signal health_changed(new_amount)
-signal currency_updated(new_gold, xp, xp_next_max)
+signal currency_updated(new_gold, xp, level, xp_next_max)
 signal level_up(new_level)
 signal player_died
 
@@ -95,7 +95,7 @@ func collect_loot(type_id: int, amount: int):
 	var result = repository.add_loot(type_id, amount)
 	
 	# 2. Update UI
-	currency_updated.emit(result.gold, result.xp, result.xp_next)
+	currency_updated.emit(result.gold, result.xp, result.level, result.xp_next)
 	
 	if result.leveled_up:
 		view.play_level_up_effect()
@@ -147,3 +147,17 @@ func take_damage(amount: int):
 		print("Player Died! Transitioning to Death State...")
 		state_machine.change_move_state(state_machine.MoveState.DEATH)
 		player_died.emit()
+
+# Called by the Shop UI when a button is clicked
+func try_purchase(cost: int, item_effect_id: String) -> bool:
+	if repository.gold >= cost:
+		repository.gold -= cost
+		# ... apply effect ...
+		currency_updated.emit(
+			repository.gold, 
+			repository.experience, 
+			repository.xp_next_level, 
+			repository.current_level  # <--- The missing 4th argument
+		)		
+		return true
+	return false
