@@ -1,9 +1,9 @@
 [gd_scene format=3 uid="uid://cw32lljoy5qpi"]
 
-[ext_resource type="Script" uid="uid://bp86kc0k7pfr5" path="res://Scripts/Monsters/enemy_controller.gd" id="1_uq2xv"]
+[ext_resource type="Script" uid="uid://bp86kc0k7pfr5" path="res://Scripts/Monsters/Controller/enemy_controller.gd" id="1_uq2xv"]
 [ext_resource type="PackedScene" uid="uid://kg76jqturayc" path="res://Scenes/Components/Effects/LootItem.tscn" id="2_0ouli"]
-[ext_resource type="Script" uid="uid://b3l5fu3stpcfi" path="res://Scripts/Monsters/monster_state_machine.gd" id="2_sw3yv"]
-[ext_resource type="Script" uid="uid://da8u6eteha3ob" path="res://Scripts/Monsters/monster_view.gd" id="4_3byci"]
+[ext_resource type="Script" uid="uid://b3l5fu3stpcfi" path="res://Scripts/Monsters/Controller/monster_state_machine.gd" id="2_sw3yv"]
+[ext_resource type="Script" uid="uid://da8u6eteha3ob" path="res://Scripts/Monsters/View/monster_view.gd" id="4_3byci"]
 
 [sub_resource type="CapsuleShape2D" id="CapsuleShape2D_uq2xv"]
 

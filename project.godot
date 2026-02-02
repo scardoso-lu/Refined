@@ -27,7 +27,7 @@ buses/default_bus_layout=""
 [autoload]
 
 GameState="*res://Scripts/Login/game_state.gd"
-MonsterDB="*res://Scripts/Monsters/monster_texture_db.gd"
+MonsterDB="*res://Scripts/Monsters/Repository/monster_texture_db.gd"
 WorldManager="*uid://xw8wlpudek8k"
 ShopItemDb="*uid://od5are5wqcgd"
 

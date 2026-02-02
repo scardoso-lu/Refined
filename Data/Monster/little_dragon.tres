@@ -1,6 +1,6 @@
-[gd_resource type="Resource" script_class="MonsterDef" load_steps=3 format=3 uid="uid://kpnwbnhq6wkn"]
+[gd_resource type="Resource" script_class="MonsterDef" format=3 uid="uid://kpnwbnhq6wkn"]
 
-[ext_resource type="Script" uid="uid://c6or6cd4sq8a3" path="res://Scripts/Monsters/monster_def.gd" id="1_ibuev"]
+[ext_resource type="Script" uid="uid://c6or6cd4sq8a3" path="res://Scripts/Monsters/Repository/monster_def.gd" id="1_ibuev"]
 [ext_resource type="SpriteFrames" uid="uid://bgi2212ko8ubr" path="res://Assets/Monsters/Little_Dragon/little_dragon.tres" id="2_6nfj7"]
 
 [resource]

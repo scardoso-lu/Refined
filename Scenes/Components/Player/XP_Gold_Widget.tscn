@@ -1,6 +1,6 @@
 [gd_scene format=3 uid="uid://cw0hilcifiit2"]
 
-[ext_resource type="Script" uid="uid://c7ghxnmg1g62j" path="res://Scripts/Components/xp_gold_widget.gd" id="1_xjqas"]
+[ext_resource type="Script" uid="uid://c7ghxnmg1g62j" path="res://Scripts/Components/HUD/xp_gold_widget.gd" id="1_xjqas"]
 
 [node name="Control" type="Control" unique_id=806079334]
 layout_mode = 3

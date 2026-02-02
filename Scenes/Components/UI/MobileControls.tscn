@@ -1,6 +1,6 @@
 [gd_scene format=3 uid="uid://cn5xr50bisyfw"]
 
-[ext_resource type="Script" uid="uid://dkssslatn343w" path="res://Scripts/Global/mobile_controls.gd" id="1_ea3dg"]
+[ext_resource type="Script" uid="uid://dkssslatn343w" path="res://Scripts/Global/Mobile/mobile_controls.gd" id="1_ea3dg"]
 
 [sub_resource type="CurveTexture" id="CurveTexture_ub33m"]
 

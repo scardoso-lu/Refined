@@ -1,6 +1,6 @@
 [gd_scene format=3 uid="uid://ltkpnqk4kgf4"]
 
-[ext_resource type="Script" uid="uid://b820a72jkihb2" path="res://Scripts/Shop/merchant.gd" id="1_w5435"]
+[ext_resource type="Script" uid="uid://b820a72jkihb2" path="res://Scripts/Shop/Controller/merchant.gd" id="1_w5435"]
 [ext_resource type="SpriteFrames" uid="uid://cub3uopnille2" path="res://Data/Global/shop.tres" id="2_2c06a"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_ywe25"]

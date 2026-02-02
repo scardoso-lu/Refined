@@ -1,6 +1,6 @@
-[gd_scene load_steps=4 format=3 uid="uid://yh8tgt8oun3d"]
+[gd_scene format=3 uid="uid://yh8tgt8oun3d"]
 
-[ext_resource type="Script" uid="uid://g0fjsdk6whg7" path="res://Scripts/Components/damage_numbers.gd" id="1_taxw7"]
+[ext_resource type="Script" uid="uid://g0fjsdk6whg7" path="res://Scripts/Components/Shared/damage_numbers.gd" id="1_taxw7"]
 
 [sub_resource type="SystemFont" id="SystemFont_6hgmh"]
 

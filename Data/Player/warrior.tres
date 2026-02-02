@@ -1,6 +1,6 @@
 [gd_resource type="Resource" script_class="CharacterDef" format=3 uid="uid://cf21g45ygr7uj"]
 
-[ext_resource type="Script" uid="uid://d3e3237g88htu" path="res://Scripts/Player/character_def.gd" id="1_5o2g5"]
+[ext_resource type="Script" uid="uid://d3e3237g88htu" path="res://Scripts/Player/Repository/character_def.gd" id="1_5o2g5"]
 [ext_resource type="Texture2D" uid="uid://bmixsacyfj5sl" path="res://Assets/Player/warrior/attack_right/frames/01.png" id="1_b6jqn"]
 [ext_resource type="SpriteFrames" uid="uid://04q3bagdeug2" path="res://Assets/Player/warrior/warrior_frames.tres" id="2_udfhg"]
 

@@ -1,6 +1,6 @@
 [gd_scene format=3 uid="uid://d0bxpwvr7rro3"]
 
-[ext_resource type="Script" uid="uid://cdu0ng7kq12nh" path="res://Scripts/Global/HUD.gd" id="1_vy4fw"]
+[ext_resource type="Script" uid="uid://cdu0ng7kq12nh" path="res://Scripts/Global/View/HUD.gd" id="1_vy4fw"]
 [ext_resource type="PackedScene" uid="uid://cw0hilcifiit2" path="res://Scenes/Components/Player/XP_Gold_Widget.tscn" id="2_6wa13"]
 [ext_resource type="PackedScene" uid="uid://5s1d5q1ua43v" path="res://Scenes/Components/Player/HealthWidget.tscn" id="3_rxb6u"]
 [ext_resource type="PackedScene" uid="uid://crica5ogdvqx4" path="res://Scenes/Shop/ShopWidget.tscn" id="5_tcqxm"]

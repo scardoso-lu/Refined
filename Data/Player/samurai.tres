@@ -1,6 +1,6 @@
 [gd_resource type="Resource" script_class="CharacterDef" format=3 uid="uid://dlvb5utfcxwqd"]
 
-[ext_resource type="Script" uid="uid://d3e3237g88htu" path="res://Scripts/Player/character_def.gd" id="1_obbbi"]
+[ext_resource type="Script" uid="uid://d3e3237g88htu" path="res://Scripts/Player/Repository/character_def.gd" id="1_obbbi"]
 [ext_resource type="Texture2D" uid="uid://dv7fpmgpr10d2" path="res://Assets/Player/samurai/01.png" id="2_dp6mm"]
 [ext_resource type="SpriteFrames" uid="uid://c87i0t1uyhtbm" path="res://Assets/Player/samurai/samurai_frames.tres" id="2_y2oat"]
 

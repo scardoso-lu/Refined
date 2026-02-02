@@ -1,6 +1,6 @@
 [gd_scene format=3 uid="uid://kg76jqturayc"]
 
-[ext_resource type="Script" uid="uid://bvair2nogol57" path="res://Scripts/Components/loot_item.gd" id="1_ymlhh"]
+[ext_resource type="Script" uid="uid://bvair2nogol57" path="res://Scripts/Components/Items/loot_item.gd" id="1_ymlhh"]
 [ext_resource type="SpriteFrames" uid="uid://bh4jrpgs8gocx" path="res://Data/Global/gold_coin.tres" id="2_1kbqv"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_sag1t"]

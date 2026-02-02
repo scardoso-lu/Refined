@@ -1,6 +1,6 @@
-[gd_resource type="Resource" script_class="MonsterDef" load_steps=3 format=3 uid="uid://c1t6bf7246j3s"]
+[gd_resource type="Resource" script_class="MonsterDef" format=3 uid="uid://c1t6bf7246j3s"]
 
-[ext_resource type="Script" uid="uid://c6or6cd4sq8a3" path="res://Scripts/Monsters/monster_def.gd" id="1_xo256"]
+[ext_resource type="Script" uid="uid://c6or6cd4sq8a3" path="res://Scripts/Monsters/Repository/monster_def.gd" id="1_xo256"]
 [ext_resource type="SpriteFrames" uid="uid://b3grv82dy2y5f" path="res://Assets/Monsters/Rock_Golem/rock_golem.tres" id="2_7rqoe"]
 
 [resource]
