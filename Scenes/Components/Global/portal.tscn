@@ -1,6 +1,6 @@
 [gd_scene format=3 uid="uid://5txpbu6237gm"]
 
-[ext_resource type="Script" uid="uid://cmvemhk5hdbnw" path="res://Scripts/Global/portal.gd" id="1_ahgc4"]
+[ext_resource type="Script" uid="uid://cmvemhk5hdbnw" path="res://Scripts/Global/Managers/portal_manager.gd" id="1_ahgc4"]
 [ext_resource type="SpriteFrames" uid="uid://rk80jle6n0gf" path="res://Data/Global/portal.tres" id="2_x1eat"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_yqac8"]

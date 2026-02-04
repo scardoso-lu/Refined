@@ -1,0 +1,10 @@
+[gd_resource type="Resource" script_class="MonsterDef" format=3 uid="uid://dwy7ln1jl16xd"]
+
+[ext_resource type="Script" uid="uid://c6or6cd4sq8a3" path="res://Scripts/Monsters/Repository/monster_def.gd" id="1_u806f"]
+[ext_resource type="SpriteFrames" uid="uid://dlngydfdpc8b1" path="res://Assets/Monsters/Half_Smile/half_smile.tres" id="2_u806f"]
+
+[resource]
+script = ExtResource("1_u806f")
+sprite_frames = ExtResource("2_u806f")
+aggro_range = 500.0
+metadata/_custom_type_script = "uid://c6or6cd4sq8a3"

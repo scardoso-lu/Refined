@@ -6,4 +6,5 @@
 [resource]
 script = ExtResource("1_ibuev")
 sprite_frames = ExtResource("2_6nfj7")
+aggro_range = 500.0
 metadata/_custom_type_script = "uid://c6or6cd4sq8a3"

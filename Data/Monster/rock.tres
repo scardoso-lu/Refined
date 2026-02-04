@@ -1,0 +1,10 @@
+[gd_resource type="Resource" script_class="MonsterDef" format=3 uid="uid://c00x6nclfpfg7"]
+
+[ext_resource type="Script" uid="uid://c6or6cd4sq8a3" path="res://Scripts/Monsters/Repository/monster_def.gd" id="1_uduk0"]
+[ext_resource type="SpriteFrames" uid="uid://c1ic6fejf48wd" path="res://Assets/Monsters/Rock/rock.tres" id="2_uduk0"]
+
+[resource]
+script = ExtResource("1_uduk0")
+sprite_frames = ExtResource("2_uduk0")
+aggro_range = 500.0
+metadata/_custom_type_script = "uid://c6or6cd4sq8a3"

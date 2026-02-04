@@ -1,0 +1,10 @@
+[gd_resource type="Resource" script_class="MonsterDef" format=3 uid="uid://7ptgt1i6kawx"]
+
+[ext_resource type="Script" uid="uid://c6or6cd4sq8a3" path="res://Scripts/Monsters/Repository/monster_def.gd" id="1_efffc"]
+[ext_resource type="SpriteFrames" uid="uid://dlaainemp6ba4" path="res://Assets/Monsters/Bagba/bagba.tres" id="2_efffc"]
+
+[resource]
+script = ExtResource("1_efffc")
+sprite_frames = ExtResource("2_efffc")
+aggro_range = 500.0
+metadata/_custom_type_script = "uid://c6or6cd4sq8a3"

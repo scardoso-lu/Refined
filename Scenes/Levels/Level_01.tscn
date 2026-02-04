@@ -85,14 +85,13 @@ player_scene = ExtResource("1_ygytw")
 [node name="UserInterface" parent="." unique_id=270326296 instance=ExtResource("8_bmcj7")]
 layer = -50
 
-[node name="MonsterSpawnPoint" type="Marker2D" parent="." unique_id=1179319457]
+[node name="MonsterSpawnPoint_01" type="Marker2D" parent="." unique_id=1179319457]
 position = Vector2(2465, 279)
 script = ExtResource("6_taws2")
 
-[node name="MonsterSpawnPoint2" type="Marker2D" parent="." unique_id=1133692317]
+[node name="MonsterSpawnPoint_02" type="Marker2D" parent="." unique_id=1133692317]
 position = Vector2(1680, 266)
 script = ExtResource("6_taws2")
-monster_id = "little_dragon"
 
 [node name="portal" parent="." unique_id=1070265907 instance=ExtResource("7_bmcj7")]
 light_mask = 2
