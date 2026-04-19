@@ -7,7 +7,7 @@ class_name BossHealthWidget
 func init_boss(monster_def: MonsterDef, current_health: int):
 	# 1. Setup Data
 	if monster_def:
-		health_bar.max_value = monster_def.max_health
+		health_bar.max_value = monster_def.base_hp
 		# Assuming your MonsterDef has a 'name' field. 
 		# If not, just set it manually or add 'export var monster_name' to MonsterDef
 		name_label.text = monster_def.resource_name 

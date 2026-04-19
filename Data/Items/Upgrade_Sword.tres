@@ -8,3 +8,4 @@ id = "4"
 name = "Upgrade Sword"
 cost = 10000
 description = "Get more Power!"
+bonus_damage = 25

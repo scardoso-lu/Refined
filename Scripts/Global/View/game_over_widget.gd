@@ -15,7 +15,7 @@ func _on_try_again_pressed():
 	get_tree().reload_current_scene()
 	
 
-func _on_back_to_vilage_pressed():
+func _on_back_to_village_pressed():
 	# Usually, going back to the village heals the player
 	GameState.reset_session_health()
 	# Change this path to your actual Main Menu scene
