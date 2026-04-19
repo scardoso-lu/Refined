@@ -309,7 +309,52 @@ Use **Project → Export** in the Godot editor. Presets for Windows Desktop and 
 
 ### Testing
 
-There is no automated test framework. Test manually in the Godot editor. Use `print()` / `printerr()` for debug output.
+A lightweight built-in test framework lives in `tests/`. No external dependencies are required.
+
+**Running tests:**
+1. Open `project.godot` in Godot 4.6.
+2. Run the scene `tests/test_runner.tscn` (Scene → Run Specific Scene, or F6 after opening the file).
+3. Results print to the Godot Output panel.
+
+**Headless / CI:**
+```
+godot --headless --path /path/to/Refined tests/test_runner.tscn
+```
+The process exits with code `0` (all pass) or `1` (any failure).
+
+**Test structure:**
+```
+tests/
+├── test_base.gd          # class_name RefinedTest — assertion helpers
+├── test_runner.gd        # Discovers and runs all suites; prints summary
+├── test_runner.tscn      # Minimal Node scene that drives test_runner.gd
+└── unit/
+    ├── test_player_repository.gd    # PlayerRepository logic (~35 assertions)
+    ├── test_monster_repository.gd   # MonsterRepository scaling (~15 assertions)
+    ├── test_monster_texture_db.gd   # Wave generation / tier logic (~13 assertions)
+    └── test_game_state.gd           # GameState session cache (~13 assertions)
+```
+
+**Adding a new test suite:**
+1. Create `tests/unit/test_<feature>.gd` that `extends RefinedTest` with `class_name Test<Feature>`.
+2. Add methods named `test_*` — each calls `assert_*` helpers from `RefinedTest`.
+3. Add the path to the `SUITES` array in `tests/test_runner.gd`.
+
+**Available assertions** (in `tests/test_base.gd`):
+`assert_eq`, `assert_ne`, `assert_true`, `assert_false`, `assert_gt`, `assert_ge`, `assert_lt`, `assert_le`, `assert_between`
+
+**What is tested:**
+| Suite | Covers |
+|---|---|
+| `test_player_repository` | `init`, `apply_damage`, `compute_velocity_x`, `add_loot`, level-up, `get_outgoing_damage`, `try_purchase_item`, stat scaling |
+| `test_monster_repository` | `init`/scaling by difficulty, `apply_damage`, `is_dead`, `get_speed` |
+| `test_monster_texture_db` | Tier selection by level, safe vs. danger spawn counts, output format |
+| `test_game_state` | Session cache defaults, `update_session_cache`, `reset_session_health`, CHARACTER_DB, `get_selected_character_data` |
+
+**What is not tested** (scene-tree dependent):
+- `PlayerController`, `MonsterController`, `PlayerStateMachine` — require a running scene for `CharacterBody2D` physics.
+- `HUD`, `HealthWidget`, `ShopWidget` — UI nodes.
+- `WorldManager.process_reward` — uses `get_tree().get_first_node_in_group()`.
 
 ### Gitignored paths
 
