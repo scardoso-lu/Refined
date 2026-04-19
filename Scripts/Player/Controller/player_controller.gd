@@ -151,13 +151,25 @@ func take_damage(amount: int):
 # Called by the Shop UI when a button is clicked
 func purchase_item(item_def: ItemDef) -> bool:
 	var success = repository.try_purchase_item(item_def)
-	if success:
-		# ... apply effect ...
-		currency_updated.emit(
-			repository.gold, 
-			repository.experience, 
-			repository.xp_next_level, 
-			repository.current_level  # <--- The missing 4th argument
-		)		
-		return true
-	return false
+	if not success:
+		return false
+
+	# Apply heal effect
+	if item_def.heal_amount > 0:
+		repository.current_health = min(
+			repository.current_health + item_def.heal_amount,
+			repository.max_health
+		)
+		health_changed.emit(repository.current_health)
+
+	# Apply permanent damage bonus
+	if item_def.bonus_damage > 0:
+		repository.damage += item_def.bonus_damage
+
+	currency_updated.emit(
+		repository.gold,
+		repository.experience,
+		repository.current_level,
+		repository.xp_next_level
+	)
+	return true
