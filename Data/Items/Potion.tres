@@ -6,4 +6,6 @@
 script = ExtResource("1_g2ga4")
 id = "2"
 name = "Low Heal Potion"
+cost = 100
 description = "Heal Potion!"
+heal_amount = 30

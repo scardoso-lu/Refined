@@ -8,3 +8,4 @@ id = "3"
 name = "Max  Heal Potion"
 cost = 500
 description = "Juice HEAL!"
+heal_amount = 9999

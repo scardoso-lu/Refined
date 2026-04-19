@@ -1,22 +1,18 @@
 extends Control
 class_name ShopWidget
 
-signal shop_opened(shop_id: String)
 # --- 1. STATE VARIABLES ---
 var current_player: PlayerController
+var _current_shop_id: String = ""
 
 # --- 2. CONFIGURATION ---
 # Drag your 'ShopItemButton.tscn' here in the Inspector!
-@export var item_button_scene: PackedScene 
+@export var item_button_scene: PackedScene
 
 # --- 3. SCENE REFERENCES ---
-# We use export for nodes too, just in case structure changes
 @onready var title_label = $Panel/VBoxContainer/TitleLabel
 @onready var close_btn = $Panel/VBoxContainer/CloseButton
 @onready var item_grid =  $Panel/VBoxContainer/ItemGrid
-
-@export var shop_items_village: Array[ItemDef] = []
-@export var shop_items_trader: Array[ItemDef] = []
 
 # --- 5. INITIALIZATION ---
 func _ready() -> void:
@@ -35,8 +31,9 @@ func _ready() -> void:
 # --- 6. OPEN LOGIC ---
 func _on_shop_opened(shop_id: String) -> void:
 	current_player = get_tree().get_first_node_in_group("Player")
-	print(current_player)
 	if not current_player: return
+
+	_current_shop_id = shop_id
 
 	# A. Set Title
 	match shop_id:
@@ -81,13 +78,14 @@ func _populate_grid(shop_id: String):
 
 func _attempt_purchase(item: ItemDef) -> void:
 	if not current_player: return
-	
-	# Pass the resource to the controller
+
 	var success = current_player.purchase_item(item)
-	
+
 	if success:
-		print("💰 Bought: ", item.name)
-	else:
-		print("❌ Too expensive!")
+		_populate_grid(_current_shop_id)
+		if item_grid.get_child_count() > 0:
+			item_grid.get_child(0).grab_focus()
+		else:
+			close_btn.grab_focus()
 func _close_shop() -> void:
 	hide()

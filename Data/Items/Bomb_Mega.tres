@@ -8,3 +8,4 @@ id = "1"
 name = "Bomb Mega"
 cost = 1000
 description = "BOOM!!"
+bonus_damage = 10
