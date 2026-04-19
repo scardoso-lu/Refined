@@ -14,3 +14,4 @@ extends Resource
 @export_group("AI Behavior")
 @export var aggro_range: float = 200.0 # How far it sees you
 @export var attack_range: float = 100.0 # How close to hit you
+@export var attack_cooldown: float = 1.0 # Seconds between attacks

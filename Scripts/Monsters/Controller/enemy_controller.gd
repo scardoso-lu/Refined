@@ -50,7 +50,7 @@ func _update_sensors():
 	if velocity.x > 0: floor_ray.position.x = abs(floor_ray.position.x)
 	elif velocity.x < 0: floor_ray.position.x = -abs(floor_ray.position.x)
 
-	if player_ref and player_ref.has_method("is_dead") and player_ref.is_dead():
+	if is_instance_valid(player_ref) and player_ref.has_method("is_dead") and player_ref.is_dead():
 		player_ref = null
 		state_machine.change_move_state(state_machine.MoveState.IDLE)
 
