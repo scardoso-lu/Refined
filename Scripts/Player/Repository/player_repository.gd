@@ -22,19 +22,18 @@ var xp_next_level: int = 100
 var current_level: int = 1
 
 # Scaling Config
-var damage_scale_A := 0.002
-var hp_scale_B := 0.004
-var xp_scale_X := 120
+const DAMAGE_SCALE_A := 0.002
+const XP_BASE        := 100   # XP required for level 1 → 2
+const XP_EXPONENT    := 1.8   # curve steepness (pre-100)
+const XP_PRESTIGE    := 1.15  # per-level multiplier applied every level after 100
 
 # --- INITIALIZATION ---
 func init(def: CharacterDef):
 	stats = def
-	# Initial calculation based on definition
 	if def:
 		current_level = def.player_level
 		experience = def.experience
-		xp_next_level = def.xp_next_level
-	
+	xp_next_level = _xp_for_level(current_level)
 	_recalculate_stats()
 	current_health = max_health
 
@@ -53,21 +52,17 @@ func apply_damage(amount: int) -> int:
 	return current_health
 
 func add_loot(type_id: int, amount: int) -> Dictionary:
-	# Returns a "Packet" of changes
 	var leveled_up = false
 	var final_level = current_level
-	
-	experience += amount
-	leveled_up = _check_level_up()
-	final_level = current_level
-	
+
 	match type_id:
-		0: # COIN
+		0: # COIN — gold only
 			gold += amount
-		1: # GEM
-			gold += amount * 2
-			
-			
+		1: # XP reward from monster kill — experience only
+			experience += amount
+			leveled_up = _check_level_up()
+			final_level = current_level
+
 	return {
 		"gold": gold,
 		"xp": experience,
@@ -78,7 +73,7 @@ func add_loot(type_id: int, amount: int) -> Dictionary:
 
 func get_outgoing_damage() -> int:
 	var scaled = _scaled_n_log_n(damage)
-	return int(damage * (1.0 + damage_scale_A * scaled))
+	return int(damage * (1.0 + DAMAGE_SCALE_A * scaled))
 
 func get_base_move_speed() -> float:
 	return stats.base_move_speed if stats else 300.0
@@ -95,14 +90,14 @@ func _check_level_up() -> bool:
 		current_level += 1
 		did_level = true
 		_recalculate_stats()
-		xp_next_level = int(xp_scale_X * _scaled_n_log_n(float(current_level)))
+		xp_next_level = _xp_for_level(current_level)
 		current_health = max_health # Heal on level up
 	return did_level
 
 func _recalculate_stats():
 	var level = max(1, current_level)
 	var log_term = log(level + 1)
-	var growth = level * log_term
+	var growth = max(1.0, level * log_term)
 	
 	# Load base stats or defaults
 	var base_hp = stats.base_max_health if stats else 100
@@ -115,6 +110,12 @@ func _recalculate_stats():
 	
 	# Scaling acceleration slightly
 	acceleration = 1200.0 * (1.0 + log_term * 0.05)
+
+func _xp_for_level(level: int) -> int:
+	var base := int(XP_BASE * pow(float(level), XP_EXPONENT))
+	if level > 100:
+		base = int(base * pow(XP_PRESTIGE, float(level - 100)))
+	return max(1, base)
 
 func _scaled_n_log_n(n: float) -> float:
 	return n * log(n + 1.0)

@@ -47,12 +47,10 @@ func test_init_with_def_reads_experience() -> void:
 	r.init(d)
 	assert_eq(r.experience, 50, "experience from CharacterDef")
 
-func test_init_with_def_reads_xp_next_level() -> void:
+func test_init_computes_xp_next_level_from_level() -> void:
 	var r := PlayerRepository.new()
-	var d := _def()
-	d.xp_next_level = 250
-	r.init(d)
-	assert_eq(r.xp_next_level, 250, "xp_next_level from CharacterDef")
+	r.init(_def())  # level 1 → int(100 * pow(1, 1.8)) = 100
+	assert_eq(r.xp_next_level, 100, "xp_next_level is derived from the level formula")
 
 # ── apply_damage ─────────────────────────────────────────────────────────────
 
@@ -117,18 +115,21 @@ func test_add_loot_coin_adds_gold() -> void:
 	r.add_loot(0, 10)
 	assert_eq(r.gold, 10, "coin type adds gold 1:1")
 
-func test_add_loot_gem_doubles_gold() -> void:
+func test_add_loot_xp_type_adds_experience() -> void:
 	var r := _repo()
+	r.experience = 0
 	r.gold = 0
+	r.xp_next_level = 9999
 	r.add_loot(1, 10)
-	assert_eq(r.gold, 20, "gem type doubles gold (10 → 20)")
+	assert_eq(r.experience, 10, "xp reward type adds experience")
+	assert_eq(r.gold, 0, "xp reward type does not add gold")
 
 func test_add_loot_adds_experience() -> void:
 	var r := _repo()
 	r.experience = 0
 	r.xp_next_level = 9999
-	r.add_loot(0, 25)
-	assert_eq(r.experience, 25, "loot adds experience equal to amount")
+	r.add_loot(1, 25)
+	assert_eq(r.experience, 25, "xp type adds experience equal to amount")
 
 func test_add_loot_returns_packet_with_current_gold() -> void:
 	var r := _repo()
@@ -140,28 +141,28 @@ func test_add_loot_returns_packet_with_current_xp() -> void:
 	var r := _repo()
 	r.experience = 0
 	r.xp_next_level = 9999
-	var pkt := r.add_loot(0, 20)
+	var pkt := r.add_loot(1, 20)
 	assert_eq(pkt["xp"], 20, "packet reports updated xp")
 
 func test_add_loot_triggers_level_up_when_xp_exceeds_threshold() -> void:
 	var r := _repo()
 	r.experience = 0
 	r.xp_next_level = 50
-	var pkt := r.add_loot(0, 55)
+	var pkt := r.add_loot(1, 55)
 	assert_true(pkt["leveled_up"], "leveled_up flag set when XP exceeds threshold")
 
 func test_add_loot_level_up_increments_current_level() -> void:
 	var r := _repo()
 	r.experience = 0
 	r.xp_next_level = 50
-	var pkt := r.add_loot(0, 55)
+	var pkt := r.add_loot(1, 55)
 	assert_eq(pkt["level"], 2, "current_level increments on level-up")
 
 func test_add_loot_level_up_restores_health() -> void:
 	var r := _repo()
 	r.current_health = 1
 	r.xp_next_level = 10
-	r.add_loot(0, 15)
+	r.add_loot(1, 15)
 	assert_gt(r.current_health, 1, "health restored on level-up")
 
 func test_add_loot_no_level_up_flag_when_xp_insufficient() -> void:

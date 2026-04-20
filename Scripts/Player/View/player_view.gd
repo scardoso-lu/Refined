@@ -6,6 +6,7 @@ signal direction_changed(dir: float)
 signal jump_pressed
 signal jump_released
 signal attack_requested
+signal interact_pressed
 
 # --- REFERENCES ---
 # Assumes structure: PlayerController -> [PlayerView, AnimatedSprite2D, WeaponArea]
@@ -37,6 +38,8 @@ func _input(event):
 		jump_released.emit()
 	if event.is_action_pressed("base_attack"):
 		attack_requested.emit()
+	if event.is_action_pressed("interact"):
+		interact_pressed.emit()
 
 # --- VISUAL REACTIONS (Called by Controller) ---
 func play_anim(anim_name: String):
