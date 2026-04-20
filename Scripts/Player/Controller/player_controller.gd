@@ -26,6 +26,8 @@ var repository: PlayerRepository = PlayerRepository.new()
 # --- STATE ---
 var _current_input_dir: float = 0.0
 var gravity: float = ProjectSettings.get_setting("physics/2d/default_gravity")
+const INVINCIBILITY_DURATION := 0.6
+var _invincibility_timer := 0.0
 
 func _ready():
 	# 1. Initialize Repository (SERVER REPLACEMENT)
@@ -56,6 +58,11 @@ func setup_character(def: CharacterDef) -> void:
 
 # --- PHYSICS LOOP ---
 func _physics_process(delta: float) -> void:
+	if _invincibility_timer > 0:
+		_invincibility_timer -= delta
+		view.sprite.visible = fmod(_invincibility_timer, 0.2) > 0.1
+		if _invincibility_timer <= 0:
+			view.sprite.visible = true
 	state_machine.physics_update(delta)
 	move_and_slide()
 
@@ -138,15 +145,18 @@ func get_xp() -> int: return repository.experience
 func get_xp_next() -> int: return repository.xp_next_level
 
 func take_damage(amount: int):
+	if _invincibility_timer > 0:
+		return
 	var new_hp = repository.apply_damage(amount)
 	health_changed.emit(new_hp)
-
 	view.play_damage_effect()
 
 	if new_hp <= 0:
-		print("Player Died! Transitioning to Death State...")
+		_invincibility_timer = 0.0
+		view.sprite.visible = true
 		state_machine.change_move_state(state_machine.MoveState.DEATH)
-		player_died.emit()
+	else:
+		_invincibility_timer = INVINCIBILITY_DURATION
 
 # Called by the Shop UI when a button is clicked
 func purchase_item(item_def: ItemDef) -> bool:

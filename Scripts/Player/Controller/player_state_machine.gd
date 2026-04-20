@@ -76,7 +76,9 @@ func change_move_state(new_state: MoveState) -> void:
 		
 		MoveState.DEATH:
 			current_action_state = ActionState.NONE
-			player.velocity.x = 0 
+			player.velocity.x = 0
+			if not player.view.sprite.sprite_frames.has_animation("death"):
+				player.player_died.emit()
 
 func _move_idle(delta: float) -> void:
 	player.apply_gravity(delta)
@@ -163,8 +165,13 @@ func _action_none(_delta: float) -> void:
 	pass
 
 func _action_attack(_delta: float) -> void:
-	# Check frame via View's sprite
-	if player.view.sprite.frame == 2 and not has_hit_target:
+	var sprite := player.view.sprite
+	var total_frames := 2
+	if sprite.sprite_frames and sprite.sprite_frames.has_animation("attack"):
+		total_frames = max(2, sprite.sprite_frames.get_frame_count("attack"))
+	var hit_frame := total_frames / 2
+
+	if sprite.frame >= hit_frame and not has_hit_target:
 		player.deal_damage_in_hitbox()
 		has_hit_target = true
 
