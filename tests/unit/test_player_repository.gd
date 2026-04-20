@@ -49,8 +49,8 @@ func test_init_with_def_reads_experience() -> void:
 
 func test_init_computes_xp_next_level_from_level() -> void:
 	var r := PlayerRepository.new()
-	r.init(_def())  # level 1 → 120 * 1 * log(2) ≈ 83
-	assert_eq(r.xp_next_level, 83, "xp_next_level is derived from the level formula")
+	r.init(_def())  # level 1 → int(100 * pow(1, 1.8)) = 100
+	assert_eq(r.xp_next_level, 100, "xp_next_level is derived from the level formula")
 
 # ── apply_damage ─────────────────────────────────────────────────────────────
 
