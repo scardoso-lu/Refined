@@ -29,12 +29,10 @@ var xp_scale_X := 120
 # --- INITIALIZATION ---
 func init(def: CharacterDef):
 	stats = def
-	# Initial calculation based on definition
 	if def:
 		current_level = def.player_level
 		experience = def.experience
-		xp_next_level = def.xp_next_level
-	
+	xp_next_level = int(xp_scale_X * _scaled_n_log_n(float(current_level)))
 	_recalculate_stats()
 	current_health = max_health
 
@@ -53,21 +51,17 @@ func apply_damage(amount: int) -> int:
 	return current_health
 
 func add_loot(type_id: int, amount: int) -> Dictionary:
-	# Returns a "Packet" of changes
 	var leveled_up = false
 	var final_level = current_level
-	
-	experience += amount
-	leveled_up = _check_level_up()
-	final_level = current_level
-	
+
 	match type_id:
-		0: # COIN
+		0: # COIN — gold only
 			gold += amount
-		1: # GEM
-			gold += amount * 2
-			
-			
+		1: # XP reward from monster kill — experience only
+			experience += amount
+			leveled_up = _check_level_up()
+			final_level = current_level
+
 	return {
 		"gold": gold,
 		"xp": experience,
@@ -102,7 +96,7 @@ func _check_level_up() -> bool:
 func _recalculate_stats():
 	var level = max(1, current_level)
 	var log_term = log(level + 1)
-	var growth = level * log_term
+	var growth = max(1.0, level * log_term)
 	
 	# Load base stats or defaults
 	var base_hp = stats.base_max_health if stats else 100
