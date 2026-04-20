@@ -38,9 +38,10 @@ func add_monster(monster_path: String, index: int, total_count: int):
 	enemy_instance.global_position = global_position + Vector2(horizontal_offset, random_y_jitter)
 	
 	# F. REWARD OBSERVER
+	var spawn_level := GameState.current_level
 	enemy_instance.tree_exiting.connect(func():
 		if enemy_instance.repository and enemy_instance.repository.is_dead():
-			WorldManager.process_reward(enemy_instance.get_xp_reward())
+			WorldManager.process_reward(enemy_instance.get_xp_reward(), spawn_level)
 	)
 	
 	# G. Add to World
